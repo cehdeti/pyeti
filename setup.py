@@ -1,11 +1,11 @@
 from setuptools import setup
 
-setup(name='awesome',
+setup(name='pyeti',
       version='0.1',
-      description='The awesomest Python package',
-      url='https://github.com/cehdeti/awesome',
+      description='The awesomest Python package from ETI',
+      url='https://github.com/cehdeti/pyeti',
       author='ETI',
       author_email='saun0063@umn.edu',
       license='MIT',
-      packages=['awesome'],
+      packages=['pyeti'],
       zip_safe=False)
