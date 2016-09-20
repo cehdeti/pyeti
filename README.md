@@ -17,7 +17,7 @@ stuff.cap_second(string_to_cap_second)
 
 stuff.cap_second(string_to_cap_second)
 > 'TSthoeu stnahoooto tnhoustnh'
-
+```
 
 ## Contribution
 
