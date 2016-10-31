@@ -1,2 +1,9 @@
+coverage==4.2
+Faker==0.7.3
+funcsigs==1.0.2
+ipaddress==1.0.17
+mock==2.0.0
+pbr==1.10.0
 pep8==1.7.0
+python-dateutil==2.5.3
 six==1.10.0
