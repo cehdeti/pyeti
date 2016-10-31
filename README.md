@@ -4,7 +4,7 @@ A Python package of awesome stuff.
 
 ## Install
 
-`pip install pyeti`
+`pip install pyeti` or `pip install -e 'git+https://github.com/cehdeti/pyeti.git@master#egg=pyeti'`
 
 ## Usage
 
@@ -46,3 +46,7 @@ cap_second(string_to_cap_second)
 cap_second(string_to_cap_second)
 > 'TSthoeu stnahoooto tnhoustnh'
 ```
+
+## Contributing
+
+Install dependencies with `pip install -r requirements.txt`. Check your code style with `pep8 .`.
