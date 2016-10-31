@@ -1,6 +1,10 @@
 [run]
+branch = True
 source = .
-omit = */test_*.py
+omit =
+    pyeti/jokes.py
+    setup.py
+    */test_*.py
 
 [report]
 exclude_lines =

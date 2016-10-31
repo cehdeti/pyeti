@@ -15,6 +15,11 @@ class empty_context(object):
     def __exit__(self, *_):
         return False
 
+    def __call__(self):
+        return self
+
+empty_context = empty_context()
+
 
 def ignore_exception(*exception_classes):
     """
@@ -23,6 +28,10 @@ def ignore_exception(*exception_classes):
         @ignore_exception(ValueError, ZeroDivisionError)
         def my_function():
             ...
+
+    Note that this functionality should only be used when you don't care about
+    the return value of the function, as it will return `None` if an exception
+    is caught.
     """
     def decorator(func):
         def func_wrapper(*args, **kwargs):
