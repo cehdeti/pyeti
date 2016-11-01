@@ -14,3 +14,30 @@ def confirm(message, default=None):
     while len(result) < 1 or result.lower() not in "yn":
         result = input("Please answer yes or no: ")
     return result[0].lower() == "y"
+
+
+def required_input(message):
+    """
+    Collect input from user and repeat until they answer.
+    """
+    result = input(message)
+
+    while len(result) < 1:
+        result = input(message)
+
+    return result
+
+
+def password_confirm(message='Password: ',
+                     confirm_message='Confirm password: '):
+    """
+    Prompt the user for a password and confirmation. Returns the password if
+    they match, `False` if they don't.
+    """
+    password = required_input(message)
+    confirm = required_input(confirm_message)
+
+    if password == confirm:
+        return password
+    else:
+        return False
