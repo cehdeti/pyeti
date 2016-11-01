@@ -1,4 +1,5 @@
 from six.moves import input
+from getpass import getpass
 
 
 def confirm(message, default=None):
@@ -16,14 +17,14 @@ def confirm(message, default=None):
     return result[0].lower() == "y"
 
 
-def required_input(message):
+def required_input(message, method=input):
     """
     Collect input from user and repeat until they answer.
     """
-    result = input(message)
+    result = method(message)
 
     while len(result) < 1:
-        result = input(message)
+        result = method(message)
 
     return result
 
@@ -34,8 +35,8 @@ def password_confirm(message='Password: ',
     Prompt the user for a password and confirmation. Returns the password if
     they match, `False` if they don't.
     """
-    password = required_input(message)
-    confirm = required_input(confirm_message)
+    password = required_input(message, method=getpass)
+    confirm = required_input(confirm_message, method=getpass)
 
     if password == confirm:
         return password
