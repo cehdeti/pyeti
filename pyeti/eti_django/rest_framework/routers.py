@@ -11,7 +11,7 @@ class SingularResourceRouter(SimpleRouter):
     For example:
 
         ```
-        from pyeti.django.rest_framework.routers import SingularResourceRouter
+        from pyeti.eti_django.rest_framework.routers import SingularResourceRouter
 
 
         class CurrentUserViewSet(mixins.RetrieveModelMixin, viewsets.GenericViewSet):
