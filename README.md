@@ -53,5 +53,6 @@ cap_second(string_to_cap_second)
 * We use the built-in `unittest` module for tests, `mock` or mocking, and
   `Faker` for generating dummy data. Run the test suite with `make test`, and
   generate code coverage reports with `make coverage` or `make coverage_html`.
+  Run tests with `python -m unittest discover`.
 * Code should all follow PEP8 conventions. Check your code style with `make
   lint`.

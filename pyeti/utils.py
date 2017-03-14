@@ -1,3 +1,9 @@
+try:
+    from django.utils import six
+except ImportError:
+    import six
+
+
 class empty_context(object):
     """
     A silly little context manager that essentially does nothing. Useful with
@@ -41,3 +47,14 @@ def ignore_exception(*exception_classes):
                 pass
         return func_wrapper
     return decorator
+
+
+def is_truthy(value):
+    """
+    Utility function that converts various values to a boolean. Useful for web
+    requests, where the value that comes in may be "0" or "false", etc.
+    """
+    if isinstance(value, six.string_types) and value.lower() in ('false', '0'):
+        return False
+    else:
+        return bool(value)
