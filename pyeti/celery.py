@@ -1,8 +1,8 @@
-from celery import shared_task, subtask, group
+from celery import shared_task, subtask, group, signature
 
 
 @shared_task
-def distributed_map(it, task):
+def distributed_map(it, task, end_task=None):
     """
     Chain together a task that returns a list and another task that is applied
     to each element in the list. For example:
@@ -17,4 +17,10 @@ def distributed_map(it, task):
 
             get_items.si() | distributed_map.s(print_item.s())
     """
-    return group(subtask(task).clone(args=i) for i in it)()
+    grp = group(subtask(task).clone(args=arg) for arg in it)
+
+    if end_task:
+        end_task = signature(end_task)
+        return (grp | end_task)()
+    else:
+        return grp()
