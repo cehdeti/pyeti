@@ -7,29 +7,6 @@ import re
 import dateutil.parser
 
 
-class empty_context(object):
-    """
-    A silly little context manager that essentially does nothing. Useful with
-    conditional `with` statements:
-
-        ```
-        with transaction.atomic() if transact else empty_context():
-            ...
-        ```
-    """
-
-    def __enter__(self):
-        return None
-
-    def __exit__(self, *_):
-        return False
-
-    def __call__(self):
-        return self
-
-empty_context = empty_context()
-
-
 def ignore_exception(*exception_classes):
     """
     A function decorator to catch exceptions and pass.
