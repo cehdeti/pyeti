@@ -53,6 +53,7 @@ def ignore_exception(*exception_classes):
 
 
 _yes_values = ['y', 'yes', '1', 'true']
+_no_values = ['n', 'no', '0', 'false', '']
 
 
 def is_truthy(value):
@@ -61,8 +62,12 @@ def is_truthy(value):
     requests, where the value that comes in may be "0" or "false", etc.
     """
     if isinstance(value, six.string_types):
-        value = value.lower()
-        return value.lower() in _yes_values
+        value = value.strip().lower()
+
+        if value in _yes_values:
+            return True
+        if value in _no_values:
+            return False
 
     return bool(value)
 

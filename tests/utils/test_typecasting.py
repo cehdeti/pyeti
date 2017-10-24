@@ -24,7 +24,7 @@ class TypecastingFromFieldTests(TestCase):
         field = self.__mock_field(field_type='BooleanField')
         values = {
             'y': True, 'Y': True, 'yes': True, 'YES': True, 'Yes': True,
-            'no': False, '': False, 'NO': False, faker.word(): False,
+            'no': False, '': False, 'NO': False, faker.word(): True, '': False,
         }
 
         for value, result in list(values.items()):
