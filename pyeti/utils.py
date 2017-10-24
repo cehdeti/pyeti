@@ -53,7 +53,6 @@ def ignore_exception(*exception_classes):
 
 
 _yes_values = ['y', 'yes', '1', 'true']
-_no_values = ['n', 'no', '0', 'false']
 
 
 def is_truthy(value):
@@ -63,11 +62,7 @@ def is_truthy(value):
     """
     if isinstance(value, six.string_types):
         value = value.lower()
-
-        if value in _no_values:
-            return False
-        if value in _yes_values:
-            return True
+        return value.lower() in _yes_values
 
     return bool(value)
 
@@ -112,7 +107,18 @@ def typecast_guess(value):
     if stripped == '':
         return None
     if _integer_re.match(value):
-        return int(_clean_numeric_string(value))
+        return int(clean_numeric_string(value))
     if _float_re.match(value):
-        return float(_clean_numeric_string(value))
+        return float(clean_numeric_string(value))
     return stripped
+
+
+def clean_numeric_string(value):
+    """
+    Removes extraneous characters (commas, spaces, etc.) from number-like
+    strings.
+    """
+    return value \
+        .replace(',', '') \
+        .replace(' ', '') \
+        .strip()
