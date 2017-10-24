@@ -3,6 +3,9 @@ try:
 except ImportError:
     import six
 
+import re
+import dateutil.parser
+
 
 class empty_context(object):
     """
@@ -49,12 +52,67 @@ def ignore_exception(*exception_classes):
     return decorator
 
 
+_yes_values = ['y', 'yes', '1', 'true']
+_no_values = ['n', 'no', '0', 'false']
+
+
 def is_truthy(value):
     """
     Utility function that converts various values to a boolean. Useful for web
     requests, where the value that comes in may be "0" or "false", etc.
     """
-    if isinstance(value, six.string_types) and value.lower() in ('false', '0'):
-        return False
-    else:
-        return bool(value)
+    if isinstance(value, six.string_types):
+        value = value.lower()
+
+        if value in _no_values:
+            return False
+        if value in _yes_values:
+            return True
+
+    return bool(value)
+
+
+def typecast_from_field(field, value):
+    """
+    Given a Django model field and a value, typecast the value to the datatype
+    expected by the field.
+    """
+    if not isinstance(value, six.string_types):
+        return value
+    if field.deconstruct()[-1].get('null') and value.strip() == '':
+        return None
+
+    field_type = field.get_internal_type()
+    if field_type == 'BooleanField':
+        return is_truthy(value)
+    if field_type == 'CharField':
+        return value.strip()
+    if field_type == 'DateField':
+        return dateutil.parser.parse(value)
+    if field_type == 'FloatField':
+        return float(value)
+    if field_type == 'IntegerField':
+        return int(value)
+
+    return value
+
+
+_integer_re = re.compile('^\-?[\d,]*$')
+_float_re = re.compile('^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$')
+
+
+def typecast_guess(value):
+    """
+    Try to typecast the given string value into a proper python datatype.
+    """
+    if not isinstance(value, six.string_types):
+        return value
+
+    stripped = value.strip()
+    if stripped == '':
+        return None
+    if _integer_re.match(value):
+        return int(_clean_numeric_string(value))
+    if _float_re.match(value):
+        return float(_clean_numeric_string(value))
+    return stripped
