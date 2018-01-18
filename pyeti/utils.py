@@ -75,7 +75,7 @@ def typecast_from_field(field, value):
 
 
 _integer_re = re.compile('^\-?[\d,]*$')
-_float_re = re.compile('^[-+]?[0-9]*\.?[0-9]+([eE][-+]?[0-9]+)?$')
+_float_re = re.compile('^[-+]?[\d,]*\.?\d+([eE][-+]?\d+)?$')
 
 
 def typecast_guess(value):
