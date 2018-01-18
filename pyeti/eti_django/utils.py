@@ -4,6 +4,7 @@ except ImportError:
     import six
 
 import dateutil.parser
+from pyeti.utils import is_truthy
 
 
 def typecast_from_field(field, value):
