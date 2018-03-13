@@ -13,6 +13,10 @@ class KeyedModelCache(object):
 
     Note that you probably will not use this class directly. Rather, use it
     through the `KeyedCacheManager` object.
+
+    It's also worth noting that this class will load and store *ALL* of the
+    records for your given model from the database, so only use this tools on
+    recordsets that will stay relatively small.
     """
 
     def __init__(self, queryset, cache_key=None):
