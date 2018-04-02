@@ -1,10 +1,5 @@
 [run]
-branch = True
-source = .
-omit =
-    pyeti/jokes.py
-    setup.py
-    */test_*.py
+source = pyeti
 
 [report]
 exclude_lines =

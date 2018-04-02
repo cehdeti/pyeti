@@ -1,4 +1,7 @@
-test = -m unittest discover "tests" "test_*.py"
+.PHONY: default
+default: init test lint
+
+test = manage.py test --keepdb
 
 init:
 	pip install -r requirements.txt
@@ -13,4 +16,4 @@ coverage_html: coverage
 	coverage html
 
 lint:
-	pep8 .
+	flake8 .
