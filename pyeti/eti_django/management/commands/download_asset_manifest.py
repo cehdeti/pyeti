@@ -5,7 +5,7 @@ from pyeti.eti_django.assets import download_asset_manifest
 
 class Command(BaseCommand):
 
-    help = 'Refreshes the asset manifest file'
+    help = 'Refreshes the asset manifest file'  # noqa: A003
 
     def handle(self, *args, **options):
         filename = download_asset_manifest(True)

@@ -12,9 +12,9 @@ def confirm(message, default=None):
     if not result and default is not None:
         return default
 
-    while len(result) < 1 or result.lower() not in "yn":
-        result = input("Please answer yes or no: ")
-    return result[0].lower() == "y"
+    while len(result) < 1 or result.lower() not in 'yn':
+        result = input('Please answer yes or no: ')
+    return result[0].lower() == 'y'
 
 
 def required_input(message, method=input):
