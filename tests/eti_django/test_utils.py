@@ -39,15 +39,15 @@ class TypecastingFromFieldTests(TestCase):
         for value, result in list(values.items()):
             self.assertEqual(typecast_from_field(field, value), result)
 
-    @mock.patch('pyeti.eti_django.utils.dateutil')
-    def test_parses_values_for_date_fields_as_a_datetime_object(self, dateutil):
+    @mock.patch('pyeti.eti_django.utils.dateparse')
+    def test_parses_values_for_date_fields_as_a_datetime_object(self, dateparse):
         return_value = faker.word()
-        dateutil.parser.parse.return_value = return_value
+        dateparse.parse_date.return_value = return_value
         field = self.__mock_field(field_type='DateField')
         value = faker.word()
 
         self.assertIs(typecast_from_field(field, value), return_value)
-        dateutil.parser.parse.assert_called_once_with(value)
+        dateparse.parse_date.assert_called_once_with(value)
 
     def test_casts_values_for_simpler_fields_using_builtin_casting_functions(self):
         conversions = [

@@ -1,9 +1,5 @@
-try:
-    from django.utils import six
-except ImportError:
-    import six
+from django.utils import six, dateparse
 
-import dateutil.parser
 from pyeti.utils import is_truthy
 
 
@@ -23,12 +19,10 @@ def typecast_from_field(field, value):
     if field_type == 'CharField':
         return value.strip()
     if field_type == 'DateField':
-        return dateutil.parser.parse(value)
+        return dateparse.parse_date(value)
     if field_type == 'FloatField':
         return float(value)
     if field_type == 'IntegerField':
         return int(value)
 
     return value
-
-
