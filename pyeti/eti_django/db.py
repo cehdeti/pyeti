@@ -1,5 +1,5 @@
 from contextlib import contextmanager
-from django.db import transaction, DatabaseError
+from django.db import transaction
 
 
 LOCK_ACCESS_SHARE = 'ACCESS SHARE'
@@ -18,39 +18,35 @@ LOCKS = (
 
 
 @contextmanager
-def db_lock(model, lock):
-    if lock not in LOCKS:
+def lock(model, lock_type):
+    """
+    Decorator or context manager for PostgreSQL's table-level lock functionality.
+
+    Adapted from https://www.caktusgroup.com/blog/2009/05/26/explicit-table-locking-with-postgresql-and-django/.
+
+    Example:
+        ```
+        from pyeti.eti_django.db import lock, LOCK_ACCESS_EXCLUSIVE
+
+        @lock(MyModel, LOCK_ACCESS_EXCLUSIVE)
+        def myfunc()
+            ...
+
+        # or
+
+        with lock(MyModel, LOCK_ACCESS_EXCLUSIVE):
+            ...
+        ```
+
+    PostgreSQL's LOCK Documentation:
+    http://www.postgresql.org/docs/latest/interactive/sql-lock.html
+    """
+    if lock_type not in LOCKS:
         raise ValueError('%s is not a PostgreSQL supported lock mode.')
 
     with transaction.atomic():
         from django.db import connection
         cursor = connection.cursor()
 
-        try:
-            cursor.execute('LOCK TABLE %s IN %s MODE' % (model._meta.db_table, lock))
-        except DatabaseError:
-            pass
-
+        cursor.execute('LOCK TABLE %s IN %s MODE' % (model._meta.db_table, lock_type))
         yield
-
-
-def require_lock(model, lock):
-    """
-    Decorator for PostgreSQL's table-level lock functionality
-
-    Copied from https://www.caktusgroup.com/blog/2009/05/26/explicit-table-locking-with-postgresql-and-django/.
-
-    Example:
-        @require_lock(MyModel, 'ACCESS EXCLUSIVE')
-        def myfunc()
-            ...
-
-    PostgreSQL's LOCK Documentation:
-    http://www.postgresql.org/docs/latest/interactive/sql-lock.html
-    """
-    def decorator(func):
-        def wrapper(*args, **kwargs):
-            with db_lock(model, lock):
-                return func(*args, **kwargs)
-        return wrapper
-    return decorator
