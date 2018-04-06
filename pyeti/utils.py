@@ -1,8 +1,4 @@
-try:
-    from django.utils import six
-except ImportError:
-    import six
-
+import six
 import re
 
 

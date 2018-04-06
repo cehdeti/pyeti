@@ -38,19 +38,22 @@ def password_confirm(message='Password: ',
     password = required_input(message, method=getpass)
     confirm = required_input(confirm_message, method=getpass)
 
-    if password == confirm:
-        return password
-    else:
+    if password != confirm:
         return False
 
+    return password
 
-def prompt(choices, label):
+
+def prompt(choices, label='choice'):
     """
     Prompt the user to choose an item from the list. Options should be a list
     of 2-tuples, where the first item is the value to be returned when the
     option is selected, and the second is the label that will be displayed to the
     user.
     """
+    if len(choices) == 0:
+        raise ValueError('The list of choices is empty')
+
     lines = ['%d) %s' % (i + 1, item[1]) for i, item in enumerate(choices)]
     index = input('\n'.join(lines + ['', 'Please select a %s: ' % label]))
     while len(index) < 1 or int(index) < 1 or int(index) > len(choices):

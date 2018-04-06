@@ -143,6 +143,7 @@ class KeyedModelCacheResetTests(TestCase):
 
     def test_resetting_refreshes_the_queryset_on_the_next_get(self):
         self.__subject.get(faker.word())
+        self.__subject.get(faker.word())
         self.__subject.reset()
         self.__subject.get(faker.word())
         self.assertEqual(2, self.__queryset.all.call_count)

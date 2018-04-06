@@ -1,5 +1,5 @@
 from contextlib import contextmanager
-from django.db import transaction
+from django.db import transaction, connection
 
 
 LOCK_ACCESS_SHARE = 'ACCESS SHARE'
@@ -45,8 +45,7 @@ def lock(model, lock_type):
         raise ValueError('%s is not a PostgreSQL supported lock mode.')
 
     with transaction.atomic():
-        from django.db import connection
-        cursor = connection.cursor()
-
-        cursor.execute('LOCK TABLE %s IN %s MODE' % (model._meta.db_table, lock_type))
+        connection.cursor().execute(
+            'LOCK TABLE %s IN %s MODE' % (model._meta.db_table, lock_type)
+        )
         yield

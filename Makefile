@@ -10,7 +10,7 @@ test:
 	python $(test)
 
 coverage:
-	coverage run $(test)
+	coverage run --branch $(test)
 
 coverage_html: coverage
 	coverage html

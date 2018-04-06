@@ -14,9 +14,12 @@ class TokenGeneratorTests(TestCase):
 
     def setUp(self):
         super().setUp()
-        self.__mock_settings = mock.patch('pyeti.eti_django.tokens.settings')
-        _mock_settings = self.__mock_settings.start()
+
+        patcher = mock.patch('pyeti.eti_django.tokens.settings')
+        _mock_settings = patcher.start()
         _mock_settings.SECRET_KEY = 'secret'
+        self.addCleanup(patcher.stop)
+
         self.__subject = TokenGenerator(_Tokenable(token_hash='hello'), 'token_hash')
 
     def test_generates_an_appropriate_token(self):
@@ -45,10 +48,6 @@ class TokenGeneratorTests(TestCase):
         mock_crypto.constant_time_compare.assert_called_once_with(
             self.__subject(), token
         )
-
-    def tearDown(self):
-        self.__mock_settings.stop()
-        super().tearDown()
 
 
 class HasSecureTokenMixinTests(TestCase):
