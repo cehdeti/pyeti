@@ -2,6 +2,9 @@
 
 A Python package of awesome stuff.
 
+[![Run Status](https://api.shippable.com/projects/5ab54a45f488d607007cad93/badge?branch=master)](https://app.shippable.com/github/cehdeti/pyeti)
+[![Coverage Badge](https://api.shippable.com/projects/5ab54a45f488d607007cad93/coverageBadge?branch=master)](https://app.shippable.com/github/cehdeti/pyeti)
+
 ## Install
 
 `pip install pyeti` or `pip install -e 'git+https://github.com/cehdeti/pyeti.git@master#egg=pyeti'`
