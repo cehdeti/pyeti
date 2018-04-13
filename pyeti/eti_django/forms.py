@@ -76,10 +76,9 @@ class ConfirmationFieldMixin(object):
             if cleaned_data[field_1] == cleaned_data[field_2]:
                 continue
 
-            field_1_label = self.fields[field_1].label
-            field_2_label = self.fields[field_2].label
-            errors[field_2] = _('The %(field)s and %(confirmation_field)s fields do not match') % {
-                'field': field_1_label, 'confirmation_field': field_2_label
+            errors[field_2] = _('%(field_1)s and %(field_2)s fields do not match') % {
+                'field_1': self.fields[field_1].get_bound_field(self, field_1).label,
+                'field_2': self.fields[field_2].get_bound_field(self, field_2).label,
             }
 
         if len(errors) > 0:
