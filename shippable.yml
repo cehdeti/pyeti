@@ -18,7 +18,7 @@ build:
     # Run test and code coverage and output results to the right folder
     - make coverage
     - coverage xml -o shippable/codecoverage/coverage.xml
-    - flake8 .
+    - make lint
 
 integrations:
   notifications:
