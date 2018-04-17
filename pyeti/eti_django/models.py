@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.functional import cached_property
 
 from natsort import natsort_keygen
 
@@ -91,7 +92,8 @@ class NaturalSortField(models.CharField):
 
     def __init__(self, for_field, natsort_key=None, natsort_alg=0, **kwargs):
         self.__for_field = for_field
-        self.__natsort = natsort_keygen(key=natsort_key, alg=natsort_alg)
+        self.__natsort_key = natsort_key
+        self.__natsort_alg = natsort_alg
 
         kwargs.setdefault('db_index', True)
         kwargs.setdefault('editable', False)
@@ -99,4 +101,15 @@ class NaturalSortField(models.CharField):
         super().__init__(**kwargs)
 
     def pre_save(self, model_instance, _add):
-        return self.__natsort(getattr(model_instance, self.__for_field))
+        return self.__natsort(getattr(model_instance, self.for_field))
+
+    def deconstruct(self):
+        name, path, args, kwargs = super().deconstruct()
+        args.append(self.__for_field)
+        kwargs['natsort_key'] = self.__natsort_key
+        kwargs['natsort_alg'] = self.__natsort_alg
+        return name, path, args, kwargs
+
+    @cached_property
+    def __natsort(self):
+        return natsort_keygen(key=self.__natsort_key, alg=self.__natsort_alg)
