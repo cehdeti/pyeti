@@ -9,6 +9,6 @@ setup(
     author_email='saun0063@umn.edu',
     license='MIT',
     packages=['pyeti'],
-    install_requires=['natsort', 'six'],
+    install_requires=['six'],
     zip_safe=False,
 )

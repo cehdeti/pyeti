@@ -1,7 +1,4 @@
 from django.db import models
-from django.utils.functional import cached_property
-
-from natsort import natsort_keygen
 
 
 class KeyedModelCache(object):
@@ -71,45 +68,3 @@ class KeyedCacheManager(models.Manager):
     def __init__(self, *args, cache_key=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.cache = KeyedModelCache(self, cache_key=cache_key)
-
-
-class NaturalSortField(models.CharField):
-    """
-    Implements a natural sort field for sorting model objects.
-
-    Usage:
-
-        ```
-        class MyModel(models.Model):
-
-            title = models.CharField()
-            title_sort = NaturalSortField('title')
-
-            class Meta:
-                ordering = ('title_sort',)
-        ```
-    """
-
-    def __init__(self, for_field, natsort_key=None, natsort_alg=0, **kwargs):
-        self.__for_field = for_field
-        self.__natsort_key = natsort_key
-        self.__natsort_alg = natsort_alg
-
-        kwargs.setdefault('db_index', True)
-        kwargs.setdefault('editable', False)
-        kwargs.setdefault('max_length', 255)
-        super().__init__(**kwargs)
-
-    def pre_save(self, model_instance, *args, **kwargs):
-        return self.__natsort(getattr(model_instance, self.__for_field))
-
-    def deconstruct(self):
-        name, path, args, kwargs = super().deconstruct()
-        args.append(self.__for_field)
-        kwargs['natsort_key'] = self.__natsort_key
-        kwargs['natsort_alg'] = self.__natsort_alg
-        return name, path, args, kwargs
-
-    @cached_property
-    def __natsort(self):
-        return natsort_keygen(key=self.__natsort_key, alg=self.__natsort_alg)
