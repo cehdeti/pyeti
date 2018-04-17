@@ -100,7 +100,7 @@ class NaturalSortField(models.CharField):
         kwargs.setdefault('max_length', 255)
         super().__init__(**kwargs)
 
-    def pre_save(self, model_instance, _add):
+    def pre_save(self, model_instance, *args, **kwargs):
         return self.__natsort(getattr(model_instance, self.__for_field))
 
     def deconstruct(self):
