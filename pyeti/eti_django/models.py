@@ -101,7 +101,7 @@ class NaturalSortField(models.CharField):
         super().__init__(**kwargs)
 
     def pre_save(self, model_instance, _add):
-        return self.__natsort(getattr(model_instance, self.for_field))
+        return self.__natsort(getattr(model_instance, self.__for_field))
 
     def deconstruct(self):
         name, path, args, kwargs = super().deconstruct()
