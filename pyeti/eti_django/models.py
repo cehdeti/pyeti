@@ -1,5 +1,7 @@
 from django.db import models
 
+from natsort import natsort_keygen
+
 
 class KeyedModelCache(object):
     """
@@ -68,3 +70,33 @@ class KeyedCacheManager(models.Manager):
     def __init__(self, *args, cache_key=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.cache = KeyedModelCache(self, cache_key=cache_key)
+
+
+class NaturalSortField(models.CharField):
+    """
+    Implements a natural sort field for sorting model objects.
+
+    Usage:
+
+        ```
+        class MyModel(models.Model):
+
+            title = models.CharField()
+            title_sort = NaturalSortField('title')
+
+            class Meta:
+                ordering = ('title_sort',)
+        ```
+    """
+
+    def __init__(self, for_field, natsort_key=None, natsort_alg=0, **kwargs):
+        self.__for_field = for_field
+        self.__natsort = natsort_keygen(key=natsort_key, alg=natsort_alg)
+
+        kwargs.setdefault('db_index', True)
+        kwargs.setdefault('editable', False)
+        kwargs.setdefault('max_length', 255)
+        super().__init__(**kwargs)
+
+    def pre_save(self, model_instance, _add):
+        return self.__natsort(getattr(model_instance, self.__for_field))
