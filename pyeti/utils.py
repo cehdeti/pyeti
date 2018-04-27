@@ -76,6 +76,7 @@ def clean_numeric_string(value):
         .replace(' ', '') \
         .strip()
 
+
 class AgeMixin(object):
     """
     Calculates the age of a person given a DateField of a person's birthday
