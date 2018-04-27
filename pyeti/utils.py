@@ -1,5 +1,6 @@
 import six
 import re
+from datetime import date
 
 
 def ignore_exception(*exception_classes):
@@ -74,3 +75,12 @@ def clean_numeric_string(value):
         .replace(',', '') \
         .replace(' ', '') \
         .strip()
+
+class AgeMixin(object):
+    """
+    Calculates the age of a person given a DateField of a person's birthday
+    """
+    @property
+    def age(self):
+        today = date.today()
+        return today.year - self.birth_date.year - ((today.month, today.day) < (self.birth_date.month, self.birth_date.day))
