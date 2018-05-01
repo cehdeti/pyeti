@@ -1,6 +1,6 @@
-import six
+import datetime
 import re
-from datetime import date
+import six
 
 
 def ignore_exception(*exception_classes):
@@ -86,16 +86,23 @@ class AgeMixin(object):
 
     @property
     def age(self):
+        """
+        The age today.
+        """
+        return self.age_on(datetime.date.today())
+
+    def age_on(self, date):
+        """
+        Returns the age on the given date.
+        """
         birth_date = getattr(self, self.BIRTH_DATE_FIELD)
 
         if not birth_date:
             return
 
-        today = date.today()
+        if birth_date > date:
+            raise ValueError('Birth date after %s!' % date)
 
-        if birth_date > today:
-            raise ValueError('Birth date is in the future!')
-
-        return today.year - birth_date.year - (
-            (today.month, today.day) < (birth_date.month, birth_date.day)
+        return date.year - birth_date.year - (
+            (date.month, date.day) < (birth_date.month, birth_date.day)
         )

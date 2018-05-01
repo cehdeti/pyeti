@@ -12,10 +12,7 @@ class AgeMixinTests(TestCase):
 
     def setUp(self):
         super().setUp()
-        date_patcher = mock.patch('pyeti.utils.date')
-        mock_date = date_patcher.start()
-        mock_date.today.return_value = date(2018, 4, 1)
-        self.addCleanup(date_patcher.stop)
+        self.__date = date(2018, 4, 1)
 
     def test_returns_the_correct_age(self):
         tests = {
@@ -29,22 +26,31 @@ class AgeMixinTests(TestCase):
 
         for birth_date, expected_age in tests.items():
             obj.birth_date = birth_date
-            self.assertEqual(obj.age, expected_age)
+            self.assertEqual(obj.age_on(self.__date), expected_age)
 
     def test_uses_the_specified_birth_date_field(self):
         attr = fake.word()
         obj = _AgeMixinImplementation(attr=attr)
         setattr(obj, attr, date(1953, 3, 21))
-        self.assertEqual(65, obj.age)
+        self.assertEqual(65, obj.age_on(self.__date))
 
     def test_returns_null_if_there_is_no_birth_date(self):
         obj = _AgeMixinImplementation()
-        self.assertIsNone(obj.age)
+        self.assertIsNone(obj.age_on(self.__date))
 
     def test_raises_if_birth_date_is_somehow_in_the_future(self):
         obj = _AgeMixinImplementation(date(2018, 9, 4))
         with self.assertRaises(ValueError):
-            obj.age
+            obj.age_on(self.__date)
+
+    @mock.patch('pyeti.utils.datetime')
+    def test_age_property_calls_with_today(self, mock_datetime):
+        mock_datetime.date.today.return_value = self.__date
+        age_on_return = fake.word()
+        obj = _AgeMixinImplementation()
+        obj.age_on = mock.Mock(return_value=age_on_return)
+        self.assertEqual(obj.age, age_on_return)
+        obj.age_on.assert_called_once_with(self.__date)
 
 
 class _AgeMixinImplementation(AgeMixin):
