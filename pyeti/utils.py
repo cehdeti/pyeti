@@ -81,7 +81,21 @@ class AgeMixin(object):
     """
     Calculates the age of a person given a DateField of a person's birthday
     """
+
+    BIRTH_DATE_FIELD = 'birth_date'
+
     @property
     def age(self):
+        birth_date = getattr(self, self.BIRTH_DATE_FIELD)
+
+        if not birth_date:
+            return
+
         today = date.today()
-        return today.year - self.birth_date.year - ((today.month, today.day) < (self.birth_date.month, self.birth_date.day))
+
+        if birth_date > today:
+            raise ValueError('Birth date is in the future!')
+
+        return today.year - birth_date.year - (
+            (today.month, today.day) < (birth_date.month, birth_date.day)
+        )
