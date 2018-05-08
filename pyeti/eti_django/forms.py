@@ -89,10 +89,17 @@ class ConfirmationFieldMixin(object):
 
 class AutofocusFirstFieldMixin(object):
     """
-    A form mixin that adds an `autofocus` attribute to the first field.
+    A form mixin that adds an `autofocus` attribute to the first field that does
+    not have an initial value.
     """
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        first = next(iter(self.fields))
-        self.fields[first].widget.attrs.update(autofocus=True)
+
+        for name, field in self.fields.items():
+            initial = self.initial.get(name, field.initial)
+            if callable(initial):
+                initial = initial()
+            if not initial:
+                self.fields[name].widget.attrs.update(autofocus=True)
+                break
