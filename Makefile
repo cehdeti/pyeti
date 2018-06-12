@@ -6,6 +6,9 @@ test = manage.py test --keepdb
 init:
 	pip install -r requirements.txt
 
+migrations:
+	python manage.py makemigrations
+
 test:
 	python $(test)
 

@@ -3,6 +3,7 @@ SECRET_KEY = 'NOTASECRET'
 
 INSTALLED_APPS = [
     'pyeti.eti_django',
+    'pyeti.eti_django.store',
 ]
 
 
