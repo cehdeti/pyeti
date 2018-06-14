@@ -29,6 +29,9 @@ class SubscriptionMiddleware(MiddlewareMixin):
           `request` as an argument.
 
     Configuration options:
+        - `PYETI_STORE_DISABLE_LICENSE_CHECK`: Whether or not to check for valid
+          usage licenses. This effectively disables all limitations based on the
+          user having a valid usage license.
         - `PYETI_STORE_NO_LICENSE_REDIRECT`: The path to redirect to when the
           user does not have a usage license. Accepts anything that can be
           passed to `django.shortcuts.redirect`.
@@ -40,9 +43,9 @@ class SubscriptionMiddleware(MiddlewareMixin):
     """
 
     def process_request(self, request):
-        if self.is_ignored_path(request.get_full_path()):
-            return
-        if request.user.is_anonymous:
+        if request.user.is_anonymous or \
+                self.__disabled or \
+                self.is_ignored_path(request.get_full_path()):
             return
 
         ulicense = self.get_usage_license(request)
@@ -81,3 +84,9 @@ class SubscriptionMiddleware(MiddlewareMixin):
     @cached_property
     def __expired_license_url(self):
         return str(getattr(settings, 'PYETI_STORE_EXPIRED_LICENSE_REDIRECT', '/'))
+
+    def __disabled(self):
+        setting = getattr(settings, 'PYETI_STORE_DISABLE_LICENSE_CHECK', None)
+        if setting is not None:
+            return setting == '1'
+        return settings.DEBUG
