@@ -7,7 +7,7 @@ from pyeti.eti_django.store.middleware import SubscriptionMiddleware
 
 
 @override_settings(
-    PYETI_STORE_DISABLE_LICENSE_CHECK='0',
+    PYETI_STORE_DISABLE_LICENSE_CHECK=False,
     PYETI_STORE_IGNORED_PATHS=[
         '^/ignored$',
         lambda: '^/also-ignored$',
@@ -138,12 +138,8 @@ class SubscriptionMiddlewareTests(TestCase):
         self.__request.user = AnonymousUser()
         self.assertIsNone(self.__subject(self.__request))
 
-    @override_settings(PYETI_STORE_DISABLE_LICENSE_CHECK='1', DEBUG=False)
+    @override_settings(PYETI_STORE_DISABLE_LICENSE_CHECK=True, DEBUG=False)
     def test_returns_if_license_checks_are_disabled(self):
-        self.assertIsNone(self.__subject(self.__request))
-
-    @override_settings(PYETI_STORE_DISABLE_LICENSE_CHECK=None, DEBUG=True)
-    def test_returns_if_debug_is_enabled(self):
         self.assertIsNone(self.__subject(self.__request))
 
     def test_returns_if_the_path_is_ignored(self):

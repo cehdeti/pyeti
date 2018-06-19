@@ -44,7 +44,7 @@ class SubscriptionMiddleware(MiddlewareMixin):
 
     def process_request(self, request):
         if request.user.is_anonymous or \
-                self.__disabled or \
+                getattr(settings, 'PYETI_STORE_DISABLE_LICENSE_CHECK', settings.DEBUG) or \
                 self.should_ignore(request):
             return
 
@@ -97,10 +97,3 @@ class SubscriptionMiddleware(MiddlewareMixin):
     @cached_property
     def __expired_license_url(self):
         return str(getattr(settings, 'PYETI_STORE_EXPIRED_LICENSE_REDIRECT', '/'))
-
-    @cached_property
-    def __disabled(self):
-        setting = getattr(settings, 'PYETI_STORE_DISABLE_LICENSE_CHECK', None)
-        if setting is not None:
-            return setting == '1'
-        return settings.DEBUG
