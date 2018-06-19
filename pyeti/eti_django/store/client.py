@@ -76,6 +76,6 @@ class Store():
 
 
 store = Store(
-    getattr(settings, 'SPREE_API_HOST', None),
-    getattr(settings, 'SPREE_AUTH_TOKEN', None)
+    getattr(settings, 'PYETI_STORE_URL', None),
+    getattr(settings, 'PYETI_STORE_AUTH_TOKEN', None)
 )

@@ -22,6 +22,8 @@ class UsageLicense(models.Model):
     Essentially a local cache of a subscription from the store.
     """
 
+    DEFAULT_SYNC_FREQUENCY = timedelta(days=2)
+
     token = models.CharField(max_length=64, unique=True)
     num_seats = models.IntegerField()
     start_date = models.DateField()
@@ -33,9 +35,12 @@ class UsageLicense(models.Model):
 
     @property
     def store_order_link(self):
-        if not self.spree_order_number:
-            return None
-        return '%sorders/%s/' % (settings.SPREE_API_HOST, self.spree_order_number)
+        if self.spree_order_number is None:
+            return
+        store_host = getattr(settings, 'PYETI_STORE_URL', None)
+        if store_host is None:
+            return
+        return '%sorders/%s/' % (store_host, self.spree_order_number)
 
     @property
     def is_expired(self):
@@ -50,10 +55,11 @@ class UsageLicense(models.Model):
         Set the sync frequency with the `PYETI_STORE_LICENSE_SYNC_FREQUENCY`
         setting. Accepts a `timedelta` object.
         """
-        frequency = getattr(settings, 'PYETI_STORE_LICENSE_SYNC_FREQUENCY', None)
-        if frequency is None:
-            frequency = timedelta(days=2)
-
+        frequency = getattr(
+            settings,
+            'PYETI_STORE_LICENSE_SYNC_FREQUENCY',
+            self.DEFAULT_SYNC_FREQUENCY
+        )
         return self.last_synced_at <= (timezone.now() - frequency)
 
     def sync_from_store(self, store=None):

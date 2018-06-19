@@ -9,6 +9,6 @@ setup(
     author_email='saun0063@umn.edu',
     license='MIT',
     packages=['pyeti'],
-    install_requires=['requests', 'six'],
+    install_requires=['python-dateutil', 'requests', 'six'],
     zip_safe=False,
 )

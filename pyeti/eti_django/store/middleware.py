@@ -1,6 +1,6 @@
 try:
     from django.utils.deprecation import MiddlewareMixin
-except ImportError:
+except ImportError:  # pragma: no cover
     MiddlewareMixin = object
 
 from django.conf import settings
@@ -45,7 +45,7 @@ class SubscriptionMiddleware(MiddlewareMixin):
     def process_request(self, request):
         if request.user.is_anonymous or \
                 self.__disabled or \
-                self.is_ignored_path(request.get_full_path()):
+                self.should_ignore(request):
             return
 
         ulicense = self.get_usage_license(request)
@@ -59,7 +59,23 @@ class SubscriptionMiddleware(MiddlewareMixin):
             signals.expired_license_redirect.send(sender=self.__class__, request=request)
             return redirect(str(self.__expired_license_url))
 
-    def is_ignored_path(self, path):
+    def should_ignore(self, request):
+        """
+        Whether or not the subscription should be checked for this request. This
+        method could be overridden if your implementation requires something
+        more than setting ignored paths.
+        """
+        return self.__is_ignored_path(request.get_full_path())
+
+    def get_usage_license(self, request):
+        """
+        Returns the usage license for the current request. This method could be
+        overridden if the usage license comes from some place other than the
+        current user.
+        """
+        return request.user.usage_license
+
+    def __is_ignored_path(self, path):
         ignored_paths = list(getattr(settings, 'PYETI_STORE_IGNORED_PATHS', []))
 
         ignored_paths.extend([
@@ -74,9 +90,6 @@ class SubscriptionMiddleware(MiddlewareMixin):
                 return True
         return False
 
-    def get_usage_license(self, request):
-        return request.user.usage_license
-
     @cached_property
     def __no_license_url(self):
         return str(getattr(settings, 'PYETI_STORE_NO_LICENSE_REDIRECT', '/'))
@@ -85,6 +98,7 @@ class SubscriptionMiddleware(MiddlewareMixin):
     def __expired_license_url(self):
         return str(getattr(settings, 'PYETI_STORE_EXPIRED_LICENSE_REDIRECT', '/'))
 
+    @cached_property
     def __disabled(self):
         setting = getattr(settings, 'PYETI_STORE_DISABLE_LICENSE_CHECK', None)
         if setting is not None:

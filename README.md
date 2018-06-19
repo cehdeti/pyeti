@@ -34,6 +34,48 @@ def get_my_key():
     return hello['my_key']
 ```
 
+### Store
+
+The `pyeti.eti_django.store` module is a library you can use to communicate
+with the ETI store and sync/check app subscriptions. To use it, add the
+following to your `settings.py`:
+
+```
+INSTALLED_APPS = [
+  ...
+  'pyeti.eti_django.store',
+  ...
+]
+
+MIDDLEWARE = [
+  ...
+  'pyeti.eti_django.store.middleware.SubscriptionMiddleware',
+  ...
+]
+```
+
+Then, in a model, add a reference to the `UsageLicense` model. Where you do
+this depends on your app.
+
+```
+from pyeti.eti_django.store.models import UsageLicense
+
+
+class Organization(models.Model):
+
+    ...
+    usage_license = models.OneToOneField(UsageLicense, models.SET_NULL, blank=True, null=True)
+    ...
+```
+
+The middleware relies on getting a `UsageLicense` object somehow, either from
+the current user (`request.user.usage_license`, by default) or from some other
+source. You can subclass `SubscriptionMiddleware` and fetch the usage license
+in another way if you need to.
+
+See `pyeti/eti_django/store/middleware.py` and
+`pyeti/eti_django/store/client.py` for possible configuration options.
+
 ### Jokes
 
 The cap_second utility will always capitalize the second letter in a python string.
@@ -56,6 +98,5 @@ cap_second(string_to_cap_second)
 * We use the built-in `unittest` module for tests, `mock` or mocking, and
   `Faker` for generating dummy data. Run the test suite with `make test`, and
   generate code coverage reports with `make coverage` or `make coverage_html`.
-  Run tests with `python -m unittest discover`.
 * Code should all follow PEP8 conventions. Check your code style with `make
   lint`.
