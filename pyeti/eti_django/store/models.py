@@ -89,7 +89,7 @@ class UsageLicense(models.Model):
         self.last_synced_at = timezone.now()
         return self
 
-    def _init_dummy_license(self):
+    def _sync_dummy_license(self):
         now = timezone.now()
         if not self.num_seats:
             self.num_seats = 100
