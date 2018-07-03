@@ -68,6 +68,9 @@ class UsageLicense(models.Model):
         attributes on this object. Note that this method does not call `save` on
         the object.
         """
+        if getattr(settings, 'PYETI_STORE_DISABLE_LICENSE_CHECK', settings.DEBUG):
+            return self._sync_dummy_license()
+
         if store is None:
             store = main_store
 
@@ -84,6 +87,17 @@ class UsageLicense(models.Model):
         self.end_date = parse_spree_date(subscription['end'])
         self.spree_order_number = subscription['order_number']
         self.last_synced_at = timezone.now()
+        return self
+
+    def _init_dummy_license(self):
+        now = timezone.now()
+        if not self.num_seats:
+            self.num_seats = 100
+        if not self.start_date:
+            self.start_date = now.date()
+        if not self.end_date or self.is_expired:
+            self.end_date = now.date() + timedelta(weeks=52)
+        self.last_synced_at = now
         return self
 
     def __str__(self):
