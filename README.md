@@ -34,6 +34,48 @@ def get_my_key():
     return hello['my_key']
 ```
 
+### Pages
+
+The `pyeti.eti_django.pages` module implements some of the more useful features
+from the `django-page-cms` library, without all of the unnecessary URL routing
+and other features. It allows you do define `{% placeholder %}` areas in your
+templates, and provides an admin interface for admins to specify content for
+them. First, add this to your `settings.py`:
+
+```
+INSTALLED_APPS = [
+  ...
+  'pyeti.eti_django.pages',
+  ...
+]
+```
+
+Then do `python manage.py migrate`. Then, you can define placeholders in your
+templates like this:
+
+```
+{% load placeholder %}
+
+<div>
+<h1>My Page</h1>
+
+{% placeholder "My Page Content" %}
+```
+
+The `{% placeholder %}` tag accepts an optional second parameter for the
+language to get content for. If it's omitted, the language from the current
+request or the globally-configured language is used, respectively. You will
+most likely never need to specify this if you're doing i18n correctly.
+
+Also, you can configure the form widget that is used when admins edit
+placeholder content using the `PYETI_PAGES_CONTENT_WIDGET` setting. It should
+be a fully-qualified python class. For example, to use a CKEditor widget,
+install `django-ckeditor` and set `PYETI_PAGES_CONTENT_WIDGET` to `ckeditor.widgets.CKEditorWidget`.
+
+Also note that this module probably will not play nicely with
+`django-page-cms`, since they define the same template tags, use similar
+database tables, etc.
+
 ### Store
 
 The `pyeti.eti_django.store` module is a library you can use to communicate
