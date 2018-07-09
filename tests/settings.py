@@ -6,6 +6,7 @@ INSTALLED_APPS = [
     'django.contrib.auth',
 
     'pyeti.eti_django',
+    'pyeti.eti_django.pages',
     'pyeti.eti_django.store',
 ]
 
