@@ -5,6 +5,12 @@ from django.utils.translation import get_language_info, ugettext as _, ugettext_
 from pyeti.eti_django.models import KeyedCacheManager
 
 
+class PlaceholderManager(KeyedCacheManager):
+
+    def get_by_natural_key(self, name, langcode):
+        return self.get(name=name, langcode=langcode)
+
+
 class Placeholder(models.Model):
 
     name = models.CharField(max_length=256)
@@ -13,7 +19,10 @@ class Placeholder(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     edited_at = models.DateTimeField(auto_now=True)
 
-    objects = KeyedCacheManager(cache_key=('name', 'langcode'))
+    objects = PlaceholderManager()
+
+    def natural_key(self):
+        return (self.name, self.langcode)
 
     def __str__(self):
         lang = get_language_info(self.langcode)
