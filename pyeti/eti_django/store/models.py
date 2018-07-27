@@ -101,4 +101,4 @@ class UsageLicense(models.Model):
         return self
 
     def __str__(self):
-        return _('Registration token %(token)s) ') % {'token': self.token}
+        return _('Registration token %(token)s') % {'token': self.token}
