@@ -43,9 +43,9 @@ class IsExpiredTests(TestCase):
         self.__subject = UsageLicenseFactory.build()
 
     def test_returns_whether_the_license_is_expired(self):
-        self.__subject.end_date = (timezone.now() + timedelta(days=1)).date()
+        self.__subject.end_date = timezone.now() + timedelta(days=1)
         self.assertFalse(self.__subject.is_expired)
-        self.__subject.end_date = (timezone.now() - timedelta(days=1)).date()
+        self.__subject.end_date = timezone.now() - timedelta(days=1)
         self.assertTrue(self.__subject.is_expired)
 
 

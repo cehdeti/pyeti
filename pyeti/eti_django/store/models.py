@@ -13,7 +13,7 @@ from .utils import parse_spree_date
 class UsageLicenseQuerySet(models.QuerySet):
 
     def expired(self):
-        return self.filter(end_date__lt=timezone.now().date())
+        return self.filter(end_date__lt=timezone.now())
 
 
 class UsageLicense(models.Model):
@@ -26,8 +26,8 @@ class UsageLicense(models.Model):
 
     token = models.CharField(max_length=64, unique=True)
     num_seats = models.IntegerField()
-    start_date = models.DateField()
-    end_date = models.DateField()
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
     last_synced_at = models.DateTimeField(auto_now_add=True)
     spree_order_number = models.CharField(max_length=16, blank=True, null=True)
 
@@ -44,7 +44,7 @@ class UsageLicense(models.Model):
 
     @property
     def is_expired(self):
-        return self.end_date < timezone.now().date()
+        return self.end_date < timezone.now()
 
     @property
     def needs_sync(self):
@@ -94,9 +94,9 @@ class UsageLicense(models.Model):
         if not self.num_seats:
             self.num_seats = 100
         if not self.start_date:
-            self.start_date = now.date()
+            self.start_date = now
         if not self.end_date or self.is_expired:
-            self.end_date = now.date() + timedelta(weeks=52)
+            self.end_date = now + timedelta(weeks=52)
         self.last_synced_at = now
         return self
 
