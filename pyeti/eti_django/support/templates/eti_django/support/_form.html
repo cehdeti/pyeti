@@ -1,0 +1,18 @@
+{% load i18n %}
+
+<form method="POST" action="{% url 'support' %}" enctype="multipart/form-data">
+  {{ form.non_field_errors }}
+  {% for field in form %}
+    {% if field.name == "phonenumber" %}
+      <p style="display: none;">
+    {% else %}
+      <p>
+    {% endif %}
+      {{ field.errors }}
+      {{ field.label_tag }}
+      {{ field }}
+    </p>
+  {% endfor %}
+  {% csrf_token %}
+  <button type="submit">{% trans "Submit" %}</button>
+</form>

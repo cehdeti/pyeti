@@ -118,6 +118,25 @@ in another way if you need to.
 See `pyeti/eti_django/store/middleware.py` and
 `pyeti/eti_django/store/client.py` for possible configuration options.
 
+### Support
+
+The `pyeti.eti_django.support` app includes a form that will create a support
+ticket in FreshDesk via email. To use it, add the following to your
+`settings.py`:
+
+```
+INSTALLED_APPS = [
+  ...
+  'pyeti.eti_django.support',
+  ...
+]
+
+PYETI_SUPPORT_EMAIL = '{FreshDesk email address to create tickets}'
+```
+
+Then, import the URL conf if you want to use the package's views and/or
+templates.
+
 ### Jokes
 
 The cap_second utility will always capitalize the second letter in a python string.

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block title %}
+  {% trans "Support" %}
+{% endblock %}
+
+{% block content %}
+  {% include "eti_django/support/_form.html" %}
+{% endblock %}
