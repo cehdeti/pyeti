@@ -26,7 +26,7 @@ class SupportForm(forms.Form):
             subject=data['subject'],
             body=data['message'],
             to=[settings.PYETI_SUPPORT_EMAIL],
-            from_email=data['email'],
+            from_email=settings.DEFAULT_FROM_EMAIL,
             reply_to=[data['email']],
         )
         for file_ in self.files.getlist('files'):
