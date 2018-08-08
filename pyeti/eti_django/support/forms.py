@@ -1,6 +1,5 @@
 from django import forms
 from django.conf import settings
-from django.core.mail import EmailMessage
 from django.utils.translation import ugettext_lazy as _
 
 import logging
@@ -50,7 +49,7 @@ class SupportForm(forms.Form):
 
         product_id = getattr(settings, 'PYETI_SUPPORT_FRESHDESK_PRODUCT_ID', None)
         if product_id:
-            payload['product_id'] = product_id
+            payload['product_id'] = int(product_id)
 
         if hasattr(self.files, 'getlist'):
             files = [
@@ -59,7 +58,6 @@ class SupportForm(forms.Form):
             ]
         else:
             files = []
-
 
         return payload, files
 
@@ -73,7 +71,7 @@ class SupportForm(forms.Form):
                 set up. Here is the data:
                 Payload: %s
                 Files: %s
-                """ % (payload, files))
+                """ % (data, files))
             return
 
         if len(files) == 0:
