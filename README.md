@@ -131,7 +131,9 @@ INSTALLED_APPS = [
   ...
 ]
 
-PYETI_SUPPORT_EMAIL = '{FreshDesk email address to create tickets}'
+PYETI_SUPPORT_FRESHDESK_SUBDOMAIN = 'etiumn'
+PYETI_SUPPORT_FRESHDESK_API_KEY = '{your API key}'
+PYETI_SUPPORT_FRESHDESK_PRODUCT_ID = '{optional}'
 ```
 
 Then, import the URL conf if you want to use the package's views and/or

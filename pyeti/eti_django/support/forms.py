@@ -3,8 +3,22 @@ from django.conf import settings
 from django.core.mail import EmailMessage
 from django.utils.translation import ugettext_lazy as _
 
+import logging
+import requests
+
+
+logger = logging.getLogger(__name__)
+
 
 class SupportForm(forms.Form):
+    """
+    Form that creates tickets in Freshdesk.
+
+    Uses the following settings:
+        - `PYETI_SUPPORT_FRESHDESK_SUBDOMAIN`
+        - `PYETI_SUPPORT_FRESHDESK_API_KEY`
+        - `PYETI_SUPPORT_FRESHDESK_PRODUCT_ID` (optional)
+    """
 
     email = forms.EmailField()
     subject = forms.CharField()
@@ -21,14 +35,57 @@ class SupportForm(forms.Form):
         raise forms.ValidationError(_('Please do not fill in the "phonenumber" field'))
 
     def save(self):
+        self.__do_request(*self.__build_payload()).raise_for_status()
+
+    def __build_payload(self):
         data = self.cleaned_data
-        email = EmailMessage(
-            subject=data['subject'],
-            body=data['message'],
-            to=[settings.PYETI_SUPPORT_EMAIL],
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            reply_to=[data['email']],
-        )
-        for file_ in self.files.getlist('files'):
-            email.attach(file_.name, file_.read(), file_.content_type)
-        email.send()
+
+        payload = {
+            'email': data['email'],
+            'subject': data['subject'],
+            'description': data['message'],
+            'status': 2,
+            'priority': 1,
+        }
+
+        product_id = getattr(settings, 'PYETI_SUPPORT_FRESHDESK_PRODUCT_ID', None)
+        if product_id:
+            payload['product_id'] = product_id
+
+        if hasattr(self.files, 'getlist'):
+            files = [
+                ('attachments[]', (file_.name, file_, file_.content_type))
+                for file_ in self.files.getlist('files')
+            ]
+        else:
+            files = []
+
+
+        return payload, files
+
+    def __do_request(self, data, files):
+        freshdesk_subdomain = getattr(settings, 'PYETI_SUPPORT_FRESHDESK_SUBDOMAIN', None)
+        freshdesk_api_key = getattr(settings, 'PYETI_SUPPORT_FRESHDESK_API_KEY', None)
+
+        if not freshdesk_subdomain or not freshdesk_api_key:
+            logger.info("""
+                Received support submission, but API URL and/or key are not
+                set up. Here is the data:
+                Payload: %s
+                Files: %s
+                """ % (payload, files))
+            return
+
+        if len(files) == 0:
+            return requests.post(
+                'https://%s.freshdesk.com/api/v2/tickets' % freshdesk_subdomain,
+                auth=(freshdesk_api_key, 'x'),
+                json=data,
+            )
+        else:
+            return requests.post(
+                'https://%s.freshdesk.com/api/v2/tickets' % freshdesk_subdomain,
+                auth=(freshdesk_api_key, 'x'),
+                data=data,
+                files=files,
+            )
