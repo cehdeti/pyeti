@@ -25,7 +25,10 @@ class Store():
         }
 
     def subscription(self, user_id, registration_code, show_details=False):
-        return self._do_request('account_subscriptions/%s' % user_id, params={
+        path = 'account_subscriptions'
+        if user_id:
+            path += '/%s' % user_id
+        return self._do_request(path, params={
             'registration_code': registration_code,
             'show_details': int(show_details),
         })
