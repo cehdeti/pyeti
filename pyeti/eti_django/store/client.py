@@ -24,6 +24,14 @@ class Store():
             'Accept': 'application/json',
         }
 
+    ###########
+    # Begin API
+    ###########
+
+    ###############
+    # Subscriptions
+    ###############
+
     def subscription(self, user_id, registration_code, show_details=False):
         path = 'account_subscriptions'
         if user_id:
@@ -33,11 +41,22 @@ class Store():
             'show_details': int(show_details),
         })
 
+    def subscriptions_by_user(self, user_id):
+        return self._do_json('users/%s/account_subscriptions' % user_id)
+
+    ##########
+    # Products
+    ##########
+
     def products(self):
         return self._do_json('products')
 
     def product(self, pk):
         return self._do_json('products/%s' % pk)
+
+    #######
+    # Users
+    #######
 
     def users(self):
         return self._do_json('users')
@@ -45,14 +64,79 @@ class Store():
     def user(self, pk):
         return self._do_json('users/%s' % pk)
 
+    def create_user(self, email, password, **kwargs):
+        data = {'user[%s]' % k: v for k, v in kwargs.items()}
+        data['user[email]'] = email
+        data['user[password]'] = password
+        return self._do_json('users', method='post', data=data)
+
+    ########
+    # Orders
+    ########
+
     def orders(self):
         return self._do_json('orders')
 
     def order(self, pk):
         return self._do_json('orders/%s' % pk)
 
-    def user_orders(self, user_id):
+    def orders_by_user(self, user_id):
         return self._do_json('users/%s/orders' % user_id)
+
+    def current_order(self, user_id):
+        return self._do_json('orders/current?user_id=%s' % user_id)
+
+    def create_order(self, user_id, email, **kwargs):
+        data = {'order[%s]' % k: v for k, v in kwargs.items()}
+        data['order[user_id]'] = user_id
+        data['order[email]'] = email
+        return self._do_json('orders', method='post', data=data)
+
+    def update_order(self, pk, order_token, line_items):
+        return self._do_json(
+            'orders/%s?order_token=%s' % (pk, order_token),
+            method='put',
+            data=line_items,
+        )
+
+    def create_line_item(self, order_id, order_token, product_id, quantity=1, **kwargs):
+        data = {'line_item[%s]' % k: v for k, v in kwargs.items()}
+        data['line_item[variant_id]'] = product_id
+        data['line_item[quantity]'] = quantity
+        return self._do_json(
+            'orders/%s/line_items?order_token=%s' % (order_id, order_token),
+            method='post',
+            data=data,
+        )
+
+    ##########
+    # Webinars
+    ##########
+
+    def webinars(self):
+        return self._do_json('webinars/all')
+
+    def webinar(self, pk):
+        return self._do_json('webinars/%s' % pk)
+
+    def webinar_registrations(self):
+        return self._do_json('webinar_registrations')
+
+    def webinar_registration(self, pk):
+        return self._do_json('webinar_registrations/%s' % pk)
+
+    def webinar_registrations_by_user(self, user_id):
+        return self._do_json('users/%s/webinar_registrations' % user_id)
+
+    def create_webinar_registration(self, user_id, webinar_id, **kwargs):
+        data = {'webinar_registration[%s]' % k: v for k, v in kwargs.items()}
+        data['webinar_registration[user_id]'] = user_id
+        data['webinar_registration[product_id]'] = webinar_id
+        return self._do_json('webinar_registrations', method='post', data=data)
+
+    #########
+    # End API
+    #########
 
     def _build_url(self, path):
         return '%s%s' % (self._endpoint, path)
