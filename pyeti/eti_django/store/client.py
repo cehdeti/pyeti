@@ -14,15 +14,16 @@ LAPSED_SUBSCRIPTION_STATUS_CODE = 211
 NO_SUBSCRIPTION_STATUS_CODE = 212
 
 
-class Store():
+class Store(object):
 
-    def __init__(self, url, token):
+    def __init__(self, url, token, group=None):
         self._endpoint = '%sapi/v1/' % url
         self._headers = {
             'X-Spree-Token': token,
             'Content-Type': 'application/json',
             'Accept': 'application/json',
         }
+        self._group = group
 
     ###########
     # Begin API
@@ -36,13 +37,19 @@ class Store():
         path = 'account_subscriptions'
         if user_id:
             path += '/%s' % user_id
-        return self._do_request(path, params={
+        params = {
             'registration_code': registration_code,
             'show_details': int(show_details),
-        })
+        }
+        if self._group:
+            params['group'] = self._group
+        return self._do_request(path, params=params)
 
     def subscriptions_by_user(self, user_id):
-        return self._do_json('users/%s/account_subscriptions' % user_id)
+        params = {}
+        if self._group:
+            params['group'] = self._group
+        return self._do_json('users/%s/account_subscriptions' % user_id, params=params)
 
     ##########
     # Products
@@ -84,7 +91,7 @@ class Store():
         return self._do_json('users/%s/orders' % user_id)
 
     def current_order(self, user_id):
-        return self._do_json('orders/current?user_id=%s' % user_id)
+        return self._do_json('orders/current', params={'user_id': user_id})
 
     def create_order(self, user_id, email, **kwargs):
         data = {'order[%s]' % k: v for k, v in kwargs.items()}
@@ -94,8 +101,9 @@ class Store():
 
     def update_order(self, pk, order_token, line_items):
         return self._do_json(
-            'orders/%s?order_token=%s' % (pk, order_token),
+            'orders/%s' % pk,
             method='put',
+            params={'order_token': order_token},
             data=line_items,
         )
 
@@ -104,8 +112,9 @@ class Store():
         data['line_item[variant_id]'] = product_id
         data['line_item[quantity]'] = quantity
         return self._do_json(
-            'orders/%s/line_items?order_token=%s' % (order_id, order_token),
+            'orders/%s/line_items' % order_id,
             method='post',
+            params={'order_token': order_token},
             data=data,
         )
 
@@ -164,5 +173,6 @@ class Store():
 
 store = Store(
     getattr(settings, 'PYETI_STORE_URL', None),
-    getattr(settings, 'PYETI_STORE_AUTH_TOKEN', None)
+    getattr(settings, 'PYETI_STORE_AUTH_TOKEN', None),
+    group=getattr(settings, 'PYETI_STORE_PRODUCT_GROUP', None)
 )
