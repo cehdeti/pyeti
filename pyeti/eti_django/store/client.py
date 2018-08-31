@@ -37,29 +37,23 @@ class Store(object):
         path = 'account_subscriptions'
         if user_id:
             path += '/%s' % user_id
-        params = {
-            'registration_code': registration_code,
-            'show_details': int(show_details),
-        }
-        if self._group:
-            params['group'] = self._group
-        return self._do_request(path, params=params)
+        return self._do_request(path, params=self._params(
+            registration_code=registration_code,
+            show_details=int(show_details),
+        ))
 
     def subscriptions_by_user(self, user_id):
-        params = {}
-        if self._group:
-            params['group'] = self._group
-        return self._do_json('users/%s/account_subscriptions' % user_id, params=params)
+        return self._do_json('users/%s/account_subscriptions' % user_id, params=self._params())
 
     ##########
     # Products
     ##########
 
     def products(self):
-        return self._do_json('products')
+        return self._do_json('products', params=self._params())
 
     def product(self, pk):
-        return self._do_json('products/%s' % pk)
+        return self._do_json('products/%s' % pk, params=self._params())
 
     #######
     # Users
@@ -91,7 +85,7 @@ class Store(object):
         return self._do_json('users/%s/orders' % user_id)
 
     def current_order(self, user_id):
-        return self._do_json('orders/current', params={'user_id': user_id})
+        return self._do_json('orders/current', params=self._params(user_id=user_id))
 
     def create_order(self, user_id, email, **kwargs):
         data = {'order[%s]' % k: v for k, v in kwargs.items()}
@@ -169,6 +163,11 @@ class Store(object):
                 result status %s
                 could not decode result json: %s
             """ % (response.url, response.text, response.status_code, e))
+
+    def _params(self, **params):
+        if self._group:
+            params['group'] = self._group
+        return params
 
 
 store = Store(
