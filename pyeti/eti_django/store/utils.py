@@ -1,12 +1,10 @@
 from dateutil import parser
-from datetime import datetime
+from django.utils import timezone
 
 
 def parse_spree_date(string):
-    return parser.parse(string, ignoretz=True)
+    return parser.parse(string)
 
 
 def difference_in_days(string):
-    then = parse_spree_date(string)
-    now = datetime.now()
-    return (then - now).days
+    return (parse_spree_date(string) - timezone.now()).days
