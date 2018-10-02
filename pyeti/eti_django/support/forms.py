@@ -34,7 +34,10 @@ class SupportForm(forms.Form):
         raise forms.ValidationError(_('Please do not fill in the "phonenumber" field'))
 
     def save(self):
-        self.__do_request(*self.__build_payload()).raise_for_status()
+        response = self.__do_request(*self.__build_payload())
+
+        if response:
+            response.raise_for_status()
 
     def __build_payload(self):
         data = self.cleaned_data
