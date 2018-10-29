@@ -2,8 +2,8 @@ from dateutil import parser
 from django.utils import timezone
 
 
-def parse_spree_date(string):
-    return parser.parse(string)
+parse_spree_date = parser.parse
+parse_spree_datetime = parser.parse
 
 
 def difference_in_days(string):
