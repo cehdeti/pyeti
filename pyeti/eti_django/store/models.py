@@ -52,9 +52,10 @@ class UsageLicense(models.Model):
     @property
     def time_until_expiry(self):
         """
-        Returns a timedelta representing the time until the license expires.
+        Returns a timedelta representing the time until the license expires. A
+        negative timedelta means that the license has expired.
         """
-        return timezone.now() - self.end_date
+        return self.end_date - timezone.now()
 
     @property
     def needs_sync(self):
