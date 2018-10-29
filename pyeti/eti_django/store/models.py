@@ -44,7 +44,17 @@ class UsageLicense(models.Model):
 
     @property
     def is_expired(self):
+        """
+        Boolean indicated whether or not the license is expired.
+        """
         return self.end_date < timezone.now()
+
+    @property
+    def time_until_expiry(self):
+        """
+        Returns a timedelta representing the time until the license expires.
+        """
+        return timezone.now() - self.end_date
 
     @property
     def needs_sync(self):
