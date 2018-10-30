@@ -2,7 +2,7 @@ from unittest import TestCase, mock
 from faker import Faker
 
 from django.db import models
-from django.db.utils import OperationalError
+from django.db.utils import ProgrammingError
 
 from pyeti.eti_django.tokens import TokenGenerator, HasSecureTokenMixin
 
@@ -63,7 +63,7 @@ class HasSecureTokenMixinTests(TestCase):
         self.assertFalse(self.__subject.token_hash)
         try:
             self.__subject.save()
-        except OperationalError:
+        except ProgrammingError:
             # Table doesn't exist, just move on.
             pass
         self.assertIsInstance(self.__subject.token_hash, str)
@@ -73,7 +73,7 @@ class HasSecureTokenMixinTests(TestCase):
         self.__subject.token_hash = 'hello'
         try:
             self.__subject.save()
-        except OperationalError:
+        except ProgrammingError:
             # Table doesn't exist, just move on.
             pass
         self.assertEqual(self.__subject.token_hash, 'hello')
