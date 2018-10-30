@@ -18,8 +18,8 @@ build:
     - mkdir -p shippable/testresults
     - mkdir -p shippable/codecoverage
 
-    - psql -c 'create role root with superuser;' -U postgres
     - psql -c 'create database pyeti;' -U postgres
+    - psql -c 'create user root with superuser;' -U postgres
 
     # Run test and code coverage and output results to the right folder
     - make coverage
