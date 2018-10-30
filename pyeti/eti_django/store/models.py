@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.utils import timezone
@@ -30,6 +31,7 @@ class UsageLicense(models.Model):
     end_date = models.DateTimeField()
     last_synced_at = models.DateTimeField(auto_now_add=True)
     spree_order_number = models.CharField(max_length=16, blank=True, null=True)
+    extra = JSONField(blank=True, default=dict)
 
     objects = UsageLicenseQuerySet.as_manager()
 
@@ -78,6 +80,10 @@ class UsageLicense(models.Model):
         Fetches the corresponding subscription from the store and saves its
         attributes on this object. Note that this method does not call `save` on
         the object.
+
+        You may also store other data from the subscription object in the `extra`
+        JSON field by specifying those fields in the
+        `PYETI_STORE_USAGE_LICENSE_EXTRA_FIELDS` setting.
         """
         if getattr(settings, 'PYETI_STORE_DISABLE_LICENSE_CHECK', settings.DEBUG):
             return self._sync_dummy_license()
@@ -98,6 +104,10 @@ class UsageLicense(models.Model):
         self.end_date = parse_spree_date(subscription['end'])
         self.spree_order_number = subscription['order_number']
         self.last_synced_at = timezone.now()
+
+        extra_fields = getattr(settings, 'PYETI_STORE_USAGE_LICENSE_EXTRA_FIELDS', [])
+        self.extra = {field: subscription.get(field) for field in extra_fields}
+
         return self
 
     def _sync_dummy_license(self):
