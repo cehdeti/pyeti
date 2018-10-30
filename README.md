@@ -115,8 +115,38 @@ the current user (`request.user.usage_license`, by default) or from some other
 source. You can subclass `SubscriptionMiddleware` and fetch the usage license
 in another way if you need to.
 
-See `pyeti/eti_django/store/middleware.py` and
-`pyeti/eti_django/store/client.py` for possible configuration options.
+Also included is a Django admin implementation, but you need to wire it up in
+your app.
+
+````
+from django.contrib import admin
+
+from pyeti.eti_django.store.admin import UsageLicenseAdmin
+from pyeti.eti_django.store.models import UsageLicense
+
+admin.site.register(UsageLicense, UsageLicenseAdmin)
+````
+
+Possible configuration options are:
+
+* `PYETI_STORE_URL`: The URL of the store
+* `PYETI_STORE_AUTH_TOKEN`: The auth token for connecting to the store API
+* `PYETI_STORE_PRODUCT_GROUP`: (optional) The name of the product group in the store to
+    restrict product and subscription listings by
+* `PYETI_STORE_DISABLE_LICENSE_CHECK`: (default: `settings.DEBUG`) A boolean indicating whether licence
+    checks should happen. Useful for local development and testing.
+* `PYETI_STORE_IGNORED_PATHS`: A list of regexps to check the current path
+    against to determine if a license should be required.
+* `PYETI_STORE_NO_LICENSE_REDIRECT`: (default: `/`) If no license is found, redirects the user
+    to this path. Automatically added to the `PYETI_STORE_IGNORED_PATHS`.
+* `PYETI_STORE_EXPIRED_LICENSE_REDIRECT`: (default: `/`) If the user has a licence but it's
+    expired, redirect to this path. Automatically added to the
+    `PYETI_STORE_IGNORED_PATHS`.
+* `PYETI_STORE_LICENSE_SYNC_FREQUENCY`: (default: `timedelta(days=2)`) The frequency with which to sync usage
+    licenses from the store. Effectively, the cache lifetime of usage license
+    records. Should be a `timedelta` object.
+* `PYETI_STORE_USAGE_LICENSE_EXTRA_FIELDS`: (default: `[]`) A list of fields from the store's
+    subscription JSON object to store in the `UsageLicense.extra` JSON field.
 
 ### Support
 

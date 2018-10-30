@@ -13,6 +13,9 @@ from .utils import parse_spree_date
 
 class UsageLicenseQuerySet(models.QuerySet):
 
+    def active(self):
+        return self.filter(end_date__gt=timezone.now())
+
     def expired(self):
         return self.filter(end_date__lt=timezone.now())
 
@@ -37,7 +40,7 @@ class UsageLicense(models.Model):
 
     @property
     def store_order_link(self):
-        if self.spree_order_number is None:
+        if not self.spree_order_number:
             return
         store_host = getattr(settings, 'PYETI_STORE_URL', None)
         if store_host is None:
