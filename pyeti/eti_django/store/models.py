@@ -8,7 +8,7 @@ from datetime import timedelta
 
 from .client import store as main_store, NO_SUBSCRIPTION_STATUS_CODE
 from .exceptions import SubscriptionDoesNotExist
-from .utils import parse_spree_date
+from .utils import parse_spree_date, get_sync_cutoff
 
 
 class UsageLicenseQuerySet(models.QuerySet):
@@ -19,14 +19,15 @@ class UsageLicenseQuerySet(models.QuerySet):
     def expired(self):
         return self.filter(end_date__lt=timezone.now())
 
+    def needing_sync(self):
+        return self.filter(last_synced_at__lte=get_sync_cutoff())
+
 
 class UsageLicense(models.Model):
     """
     Represents the ability to use the app for a certain period of time.
     Essentially a local cache of a subscription from the store.
     """
-
-    DEFAULT_SYNC_FREQUENCY = timedelta(days=2)
 
     token = models.CharField(max_length=64, unique=True)
     num_seats = models.IntegerField(verbose_name=_l('number of seats'))
@@ -71,12 +72,7 @@ class UsageLicense(models.Model):
         Set the sync frequency with the `PYETI_STORE_LICENSE_SYNC_FREQUENCY`
         setting. Accepts a `timedelta` object.
         """
-        frequency = getattr(
-            settings,
-            'PYETI_STORE_LICENSE_SYNC_FREQUENCY',
-            self.DEFAULT_SYNC_FREQUENCY
-        )
-        return self.last_synced_at <= (timezone.now() - frequency)
+        return self.last_synced_at <= get_sync_cutoff()
 
     def sync_from_store(self, store=None):
         """
