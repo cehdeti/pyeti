@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.db import models
-from django.utils.translation import ugettext as _
+from django.utils.translation import ugettext as _, ugettext_lazy as _l
 from django.utils import timezone
 
 from datetime import timedelta
@@ -29,7 +29,7 @@ class UsageLicense(models.Model):
     DEFAULT_SYNC_FREQUENCY = timedelta(days=2)
 
     token = models.CharField(max_length=64, unique=True)
-    num_seats = models.IntegerField()
+    num_seats = models.IntegerField(verbose_name=_l('number of seats'))
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
     last_synced_at = models.DateTimeField(auto_now_add=True)
