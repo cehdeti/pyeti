@@ -40,7 +40,7 @@ class Store(object):
         return self._do_request(path, params=self._params(
             registration_code=registration_code,
             show_details=int(show_details),
-            **params,
+            **params
         ))
 
     def subscriptions_by_user(self, user_id, **params):
@@ -65,7 +65,7 @@ class Store(object):
         Filters use the `ransack` gem syntax:
         https://github.com/activerecord-hackery/ransack#search-matchers
         """
-        return self._do_json('users', params=self._params(**params)
+        return self._do_json('users', params=self._params(**params))
 
     def user(self, pk, **params):
         return self._do_json('users/%s' % pk, params=self._params(**params))
@@ -92,7 +92,7 @@ class Store(object):
     def current_order(self, user_id, **params):
         return self._do_json('orders/current', params=self._params(
             user_id=user_id,
-            **params,
+            **params
         ))
 
     def create_order(self, user_id, email, **kwargs):
