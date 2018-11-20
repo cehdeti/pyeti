@@ -59,13 +59,14 @@ class Store(object):
     # Users
     #######
 
-    def users(self, params={}):
+    def users(self, **params):
         """
         Filters use the `ransack` gem syntax:
         https://github.com/activerecord-hackery/ransack#search-matchers
         """
-        params = {'q[%s]' % k: v for k, v in params.items()}
-        return self._do_json('users', params=self._params(**params))
+        return self._do_json('users', params=self._params(**{
+            'q[%s]' % k: v for k, v in params.items()
+        }))
 
     def user(self, pk):
         return self._do_json('users/%s' % pk)
