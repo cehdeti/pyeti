@@ -33,27 +33,28 @@ class Store(object):
     # Subscriptions
     ###############
 
-    def subscription(self, user_id, registration_code, show_details=False):
+    def subscription(self, user_id, registration_code, show_details=False, **params):
         path = 'account_subscriptions'
         if user_id:
             path += '/%s' % user_id
         return self._do_request(path, params=self._params(
             registration_code=registration_code,
             show_details=int(show_details),
+            **params,
         ))
 
-    def subscriptions_by_user(self, user_id):
-        return self._do_json('users/%s/account_subscriptions' % user_id, params=self._params())
+    def subscriptions_by_user(self, user_id, **params):
+        return self._do_json('users/%s/account_subscriptions' % user_id, params=self._params(**params))
 
     ##########
     # Products
     ##########
 
-    def products(self):
-        return self._do_json('products', params=self._params())
+    def products(self, **params):
+        return self._do_json('products', params=self._params(*params))
 
-    def product(self, pk):
-        return self._do_json('products/%s' % pk, params=self._params())
+    def product(self, pk, **params):
+        return self._do_json('products/%s' % pk, params=self._params(**params))
 
     #######
     # Users
@@ -64,12 +65,10 @@ class Store(object):
         Filters use the `ransack` gem syntax:
         https://github.com/activerecord-hackery/ransack#search-matchers
         """
-        return self._do_json('users', params=self._params(**{
-            'q[%s]' % k: v for k, v in params.items()
-        }))
+        return self._do_json('users', params=self._params(**params)
 
-    def user(self, pk):
-        return self._do_json('users/%s' % pk)
+    def user(self, pk, **params):
+        return self._do_json('users/%s' % pk, params=self._params(**params))
 
     def create_user(self, email, password, **kwargs):
         data = {'user[%s]' % k: v for k, v in kwargs.items()}
@@ -81,17 +80,20 @@ class Store(object):
     # Orders
     ########
 
-    def orders(self):
-        return self._do_json('orders')
+    def orders(self, **params):
+        return self._do_json('orders', params=self._params(**params))
 
-    def order(self, pk):
-        return self._do_json('orders/%s' % pk)
+    def order(self, pk, **params):
+        return self._do_json('orders/%s' % pk, params=self._params(**params))
 
-    def orders_by_user(self, user_id):
-        return self._do_json('users/%s/orders' % user_id)
+    def orders_by_user(self, user_id, **params):
+        return self._do_json('users/%s/orders' % user_id, params=self._params(**params))
 
-    def current_order(self, user_id):
-        return self._do_json('orders/current', params=self._params(user_id=user_id))
+    def current_order(self, user_id, **params):
+        return self._do_json('orders/current', params=self._params(
+            user_id=user_id,
+            **params,
+        ))
 
     def create_order(self, user_id, email, **kwargs):
         data = {'order[%s]' % k: v for k, v in kwargs.items()}
@@ -122,20 +124,20 @@ class Store(object):
     # Webinars
     ##########
 
-    def webinars(self):
-        return self._do_json('webinars/all')
+    def webinars(self, **params):
+        return self._do_json('webinars/all', params=self._params(**params))
 
-    def webinar(self, pk):
-        return self._do_json('webinars/%s' % pk)
+    def webinar(self, pk, **params):
+        return self._do_json('webinars/%s' % pk, params=self._params(**params))
 
-    def webinar_registrations(self):
-        return self._do_json('webinar_registrations')
+    def webinar_registrations(self, **params):
+        return self._do_json('webinar_registrations', params=self._params(**params))
 
-    def webinar_registration(self, pk):
-        return self._do_json('webinar_registrations/%s' % pk)
+    def webinar_registration(self, pk, **params):
+        return self._do_json('webinar_registrations/%s' % pk, params=self._params(**params))
 
-    def webinar_registrations_by_user(self, user_id):
-        return self._do_json('users/%s/webinar_registrations' % user_id)
+    def webinar_registrations_by_user(self, user_id, **params):
+        return self._do_json('users/%s/webinar_registrations' % user_id, params=self._params(**params))
 
     def create_webinar_registration(self, user_id, webinar_id, **kwargs):
         data = {'webinar_registration[%s]' % k: v for k, v in kwargs.items()}
