@@ -70,11 +70,10 @@ class Store(object):
     def user(self, pk, **params):
         return self._do_json('users/%s' % pk, params=self._params(**params))
 
-    def create_user(self, email, password, **kwargs):
-        data = {'user[%s]' % k: v for k, v in kwargs.items()}
-        data['user[email]'] = email
-        data['user[password]'] = password
-        return self._do_json('users', method='post', data=data)
+    def create_user(self, email, password, **data):
+        data['email'] = email
+        data['password'] = password
+        return self._do_json('users', method='post', json={'user': data})
 
     ########
     # Orders
@@ -95,29 +94,27 @@ class Store(object):
             **params
         ))
 
-    def create_order(self, user_id, email, **kwargs):
-        data = {'order[%s]' % k: v for k, v in kwargs.items()}
-        data['order[user_id]'] = user_id
-        data['order[email]'] = email
-        return self._do_json('orders', method='post', data=data)
+    def create_order(self, user_id, email, **data):
+        data['user_id'] = user_id
+        data['email'] = email
+        return self._do_json('orders', method='post', json={'order': data})
 
     def update_order(self, pk, order_token, line_items):
         return self._do_json(
             'orders/%s' % pk,
             method='put',
             params={'order_token': order_token},
-            data=line_items,
+            json=line_items,
         )
 
-    def create_line_item(self, order_id, order_token, product_id, quantity=1, **kwargs):
-        data = {'line_item[%s]' % k: v for k, v in kwargs.items()}
-        data['line_item[variant_id]'] = product_id
-        data['line_item[quantity]'] = quantity
+    def create_line_item(self, order_id, order_token, product_id, quantity=1, **data):
+        data['variant_id'] = product_id
+        data['quantity'] = quantity
         return self._do_json(
             'orders/%s/line_items' % order_id,
             method='post',
             params={'order_token': order_token},
-            data=data,
+            json={'line_item': data},
         )
 
     ##########
@@ -139,11 +136,10 @@ class Store(object):
     def webinar_registrations_by_user(self, user_id, **params):
         return self._do_json('users/%s/webinar_registrations' % user_id, params=self._params(**params))
 
-    def create_webinar_registration(self, user_id, webinar_id, **kwargs):
-        data = {'webinar_registration[%s]' % k: v for k, v in kwargs.items()}
-        data['webinar_registration[user_id]'] = user_id
-        data['webinar_registration[product_id]'] = webinar_id
-        return self._do_json('webinar_registrations', method='post', data=data)
+    def create_webinar_registration(self, user_id, webinar_id, **data):
+        data['user_id'] = user_id
+        data['product_id'] = webinar_id
+        return self._do_json('webinar_registrations', method='post', json={'webinar_registration': data})
 
     #########
     # End API
