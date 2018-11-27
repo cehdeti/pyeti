@@ -1,5 +1,6 @@
 from django.test import TestCase, override_settings, RequestFactory
 from django.contrib.auth.models import AnonymousUser, User
+from django.urls import reverse, reverse_lazy
 
 from unittest import mock
 
@@ -12,13 +13,13 @@ from pyeti.eti_django.store.middleware import SubscriptionMiddleware
         '^/ignored$',
         lambda: '^/also-ignored$',
     ],
-    PYETI_STORE_NO_LICENSE_REDIRECT='/no-license',
-    PYETI_STORE_EXPIRED_LICENSE_REDIRECT='/expired-license',
 )
 class SubscriptionMiddlewareTests(TestCase):
 
     def setUp(self):
         super().setUp()
+        SubscriptionMiddleware.expired_license_url = reverse('expired_license')
+        SubscriptionMiddleware.no_license_url = reverse_lazy('no_license')
         self.__subject = SubscriptionMiddleware().process_request
         self.__factory = RequestFactory()
         self.__request = self.__factory.get('/')
@@ -34,7 +35,7 @@ class SubscriptionMiddlewareTests(TestCase):
     def test_redirects_if_there_is_no_usage_license(self):
         self.__request.user.usage_license = None
         response = self.__subject(self.__request)
-        self.assertRedirects(response, '/no-license', fetch_redirect_response=False)
+        self.assertRedirects(response, '/no-license/', fetch_redirect_response=False)
 
     @mock.patch('pyeti.eti_django.store.middleware.signals')
     def test_signals_if_there_is_no_usage_license(self, mock_signals):
@@ -51,7 +52,7 @@ class SubscriptionMiddlewareTests(TestCase):
         ulicense.sync_from_store.return_value = ulicense
         self.__request.user.usage_license = ulicense
         response = self.__subject(self.__request)
-        self.assertRedirects(response, '/expired-license', fetch_redirect_response=False)
+        self.assertRedirects(response, '/expired-license/', fetch_redirect_response=False)
 
     @mock.patch('pyeti.eti_django.store.middleware.signals')
     def test_signals_if_the_usage_license_is_expired(self, mock_signals):
@@ -132,7 +133,7 @@ class SubscriptionMiddlewareTests(TestCase):
         self.__request.user.usage_license = ulicense
 
         response = self.__subject(self.__request)
-        self.assertRedirects(response, '/expired-license', fetch_redirect_response=False)
+        self.assertRedirects(response, '/expired-license/', fetch_redirect_response=False)
 
     def test_returns_for_anonymous_users(self):
         self.__request.user = AnonymousUser()

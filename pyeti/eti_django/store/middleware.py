@@ -5,7 +5,6 @@ except ImportError:  # pragma: no cover
 
 from django.conf import settings
 from django.shortcuts import redirect
-from django.utils.functional import cached_property
 
 import re
 
@@ -42,6 +41,9 @@ class SubscriptionMiddleware(MiddlewareMixin):
           do not trigger a check for a valid license.
     """
 
+    no_license_url = getattr(settings, 'PYETI_STORE_NO_LICENSE_REDIRECT', '/')
+    expired_license_url = getattr(settings, 'PYETI_STORE_EXPIRED_LICENSE_REDIRECT', '/')
+
     def process_request(self, request):
         if request.user.is_anonymous or \
                 getattr(settings, 'PYETI_STORE_DISABLE_LICENSE_CHECK', settings.DEBUG) or \
@@ -52,12 +54,12 @@ class SubscriptionMiddleware(MiddlewareMixin):
 
         if not ulicense:
             signals.no_license_redirect.send(sender=self.__class__, request=request)
-            return redirect(self.__no_license_url)
+            return redirect(self.no_license_url)
         if ulicense.is_expired or ulicense.needs_sync:
             ulicense.sync_from_store().save()
         if ulicense.is_expired:
             signals.expired_license_redirect.send(sender=self.__class__, request=request)
-            return redirect(str(self.__expired_license_url))
+            return redirect(self.expired_license_url)
 
     def should_ignore(self, request):
         """
@@ -79,8 +81,8 @@ class SubscriptionMiddleware(MiddlewareMixin):
         ignored_paths = list(getattr(settings, 'PYETI_STORE_IGNORED_PATHS', []))
 
         ignored_paths.extend([
-            '^%s$' % self.__no_license_url,
-            '^%s$' % self.__expired_license_url,
+            '^%s$' % self.no_license_url,
+            '^%s$' % self.expired_license_url,
         ])
 
         for p in ignored_paths:
@@ -89,11 +91,3 @@ class SubscriptionMiddleware(MiddlewareMixin):
             if re.search(str(p), path):
                 return True
         return False
-
-    @cached_property
-    def __no_license_url(self):
-        return str(getattr(settings, 'PYETI_STORE_NO_LICENSE_REDIRECT', '/'))
-
-    @cached_property
-    def __expired_license_url(self):
-        return str(getattr(settings, 'PYETI_STORE_EXPIRED_LICENSE_REDIRECT', '/'))
