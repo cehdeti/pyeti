@@ -5,6 +5,7 @@ except ImportError:  # pragma: no cover
 
 from django.conf import settings
 from django.shortcuts import redirect
+from django.utils.functional import cached_property
 
 import re
 
@@ -41,9 +42,6 @@ class SubscriptionMiddleware(MiddlewareMixin):
           do not trigger a check for a valid license.
     """
 
-    no_license_url = getattr(settings, 'PYETI_STORE_NO_LICENSE_REDIRECT', '/')
-    expired_license_url = getattr(settings, 'PYETI_STORE_EXPIRED_LICENSE_REDIRECT', '/')
-
     def process_request(self, request):
         if request.user.is_anonymous or \
                 getattr(settings, 'PYETI_STORE_DISABLE_LICENSE_CHECK', settings.DEBUG) or \
@@ -76,6 +74,14 @@ class SubscriptionMiddleware(MiddlewareMixin):
         current user.
         """
         return request.user.usage_license
+
+    @cached_property
+    def no_license_url(self):
+        return getattr(settings, 'PYETI_STORE_NO_LICENSE_REDIRECT', '/')
+
+    @cached_property
+    def expired_license_url(self):
+        return getattr(settings, 'PYETI_STORE_EXPIRED_LICENSE_REDIRECT', '/')
 
     def __is_ignored_path(self, path):
         ignored_paths = list(getattr(settings, 'PYETI_STORE_IGNORED_PATHS', []))
