@@ -66,15 +66,15 @@ def typecast_guess(value):
     return stripped
 
 
+_non_numeric_re = re.compile('[^-\d\.]')
+
+
 def clean_numeric_string(value):
     """
     Removes extraneous characters (commas, spaces, etc.) from number-like
     strings.
     """
-    return value \
-        .replace(',', '') \
-        .replace(' ', '') \
-        .strip()
+    return _non_numeric_re.sub('', value)
 
 
 class AgeMixin(object):
