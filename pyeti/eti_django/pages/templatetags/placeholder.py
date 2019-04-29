@@ -24,4 +24,4 @@ def placeholder(context, key, language=None):
         language = settings.LANGUAGE_CODE
 
     placeholder = Placeholder.objects.cache.get((key, language))
-    return mark_safe(placeholder.content) if placeholder else ''  # noqa: S308
+    return mark_safe(placeholder.content) if placeholder else ''  # noqa: S308,S703

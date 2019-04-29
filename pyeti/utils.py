@@ -45,8 +45,8 @@ def is_truthy(value):
     return bool(value)
 
 
-_integer_re = re.compile('^\-?[\d,]*$')
-_float_re = re.compile('^[-+]?[\d,]*\.?\d+([eE][-+]?\d+)?$')
+_integer_re = re.compile(r'^\-?[\d,]*$')
+_float_re = re.compile(r'^[-+]?[\d,]*\.?\d+([eE][-+]?\d+)?$')
 
 
 def typecast_guess(value):
@@ -66,7 +66,7 @@ def typecast_guess(value):
     return stripped
 
 
-_non_numeric_re = re.compile('[^-\d\.]')
+_non_numeric_re = re.compile(r'[^-\d\.]')
 
 
 def clean_numeric_string(value):
