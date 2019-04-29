@@ -72,8 +72,8 @@ class SubscriptionMiddlewareTests(TestCase):
         ulicense.sync_from_store.return_value = ulicense
         self.__request.user.usage_license = ulicense
         self.__subject(self.__request)
-        ulicense.sync_from_store.assert_called_once()
-        ulicense.save.assert_called_once()
+        ulicense.sync_from_store.assert_called_once_with()
+        ulicense.save.assert_called_once_with()
 
     def test_syncs_the_usage_license_if_it_needs_a_sync(self):
         ulicense = mock.Mock()
@@ -82,8 +82,8 @@ class SubscriptionMiddlewareTests(TestCase):
         ulicense.sync_from_store.return_value = ulicense
         self.__request.user.usage_license = ulicense
         self.__subject(self.__request)
-        ulicense.sync_from_store.assert_called_once()
-        ulicense.save.assert_called_once()
+        ulicense.sync_from_store.assert_called_once_with()
+        ulicense.save.assert_called_once_with()
 
     def test_does_not_sync_if_not_needed(self):
         ulicense = mock.Mock()

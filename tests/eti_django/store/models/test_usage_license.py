@@ -93,7 +93,7 @@ class SyncFromStoreTests(TestCase):
             self.__subject.sync_from_store()
         except Exception:  # noqa: S110
             pass
-        mock_store.subscription.assert_called_once()
+        mock_store.subscription.assert_called_once_with(mock.ANY, mock.ANY, show_details=mock.ANY)
 
     def test_raises_if_the_subscription_does_not_exist(self):
         response = mock.Mock()

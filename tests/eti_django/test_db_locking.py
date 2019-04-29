@@ -35,7 +35,7 @@ class LockTests(TestCase):
     def test_starts_a_new_transaction(self):
         with lock(self.__model, self.__lock):
             'hello'
-        self.__transaction.atomic.assert_called_once()
+        self.__transaction.atomic.assert_called_once_with()
 
     def test_locks_the_table(self):
         cursor = mock.Mock()
@@ -54,4 +54,4 @@ class LockTests(TestCase):
         with lock(self.__model, self.__lock):
             method()
 
-        method.assert_called_once()
+        method.assert_called_once_with()
