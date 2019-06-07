@@ -139,7 +139,7 @@ class Store(object):
     def create_webinar_registration(self, user_id, webinar_id, **data):
         data['user_id'] = user_id
         data['product_id'] = webinar_id
-        return self._do_json('webinar_registrations', method='post', json={'webinar_registration': data})
+        return self._do_request('webinar_registrations', method='post', json={'webinar_registration': data})
 
     #########
     # End API
