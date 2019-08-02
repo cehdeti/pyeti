@@ -151,7 +151,7 @@ class Store(object):
     def _do_request(self, path, method='get', **kwargs):
         kwargs.setdefault('headers', self._headers)
         kwargs.setdefault('timeout', 10)
-        kwargs.setdefault('verify', not settings.DEBUG)
+        kwargs.setdefault('verify', getattr(settings, 'PYETI_STORE_VERIFY_SSL', not settings.DEBUG))
         return requests.request(method, self._build_url(path), **kwargs)
 
     def _do_json(self, *args, **kwargs):
