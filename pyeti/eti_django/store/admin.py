@@ -1,10 +1,11 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
 
 from pyeti.eti_django.store.models import UsageLicense
+from pyeti.eti_django.store.exceptions import SubscriptionDoesNotExist
 
 
 class UsageLicenseStatusFilter(admin.SimpleListFilter):
@@ -30,11 +31,11 @@ class UsageLicenseStatusFilter(admin.SimpleListFilter):
 @admin.register(UsageLicense)
 class UsageLicenseAdmin(admin.ModelAdmin):
     model = UsageLicense
-    actions = None
     list_display = ('token', 'num_seats', 'start_date', 'end_date', 'order_number')
     list_display_links = None
     list_filter = (UsageLicenseStatusFilter,)
     search_fields = ('token',)
+    actions = ('sync_from_store',)
 
     def order_number(self, obj):
         if not obj.spree_order_number:
@@ -63,3 +64,21 @@ class UsageLicenseAdmin(admin.ModelAdmin):
         here by mistake.
         """
         raise PermissionDenied('Usage licenses cannot be edited')
+
+    def sync_from_store(self, request, queryset):
+        success = 0
+        failure = 0
+
+        for usage_license in queryset:
+            try:
+                usage_license.sync_from_store()
+                usage_license.save()
+                success += 1
+            except SubscriptionDoesNotExist:
+                failure += 1
+
+        if success:
+            self.message_user(request, '%s license(s) successfully synced from store' % success)
+        if failure:
+            self.message_user(request, '%s license(s) failed to sync from store' % failure, level=messages.ERROR)
+    sync_from_store.short_description = 'Sync from store'
