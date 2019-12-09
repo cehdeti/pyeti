@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.db import models
-from django.utils.translation import ugettext as _, ugettext_lazy as _l
+from django.utils.translation import gettext as _, gettext_lazy as _l
 from django.utils import timezone
 
 from datetime import timedelta

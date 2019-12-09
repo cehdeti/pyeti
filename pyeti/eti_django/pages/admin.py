@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.utils.translation import get_language_info, ugettext as _
+from django.utils.translation import get_language_info, gettext as _
 
 from .forms import PlaceholderForm
 from .models import Placeholder

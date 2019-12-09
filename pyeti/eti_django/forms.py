@@ -3,7 +3,7 @@ from django.forms.widgets import (
     Widget, Select, SplitDateTimeWidget as BaseSplitDateTimeWidget,
 )
 from django.utils.encoding import force_text
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 import six
 import datetime

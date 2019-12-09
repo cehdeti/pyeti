@@ -2,7 +2,7 @@ from django.db import models
 from django.db.models.signals import post_save
 from django.conf import settings
 from django.dispatch import receiver
-from django.utils.translation import get_language_info, ugettext as _, ugettext_lazy as _l
+from django.utils.translation import get_language_info, gettext as _, gettext_lazy as _l
 
 from pyeti.eti_django.models import KeyedCacheManager
 

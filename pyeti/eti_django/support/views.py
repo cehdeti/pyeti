@@ -1,7 +1,7 @@
 import django
 from django.views.generic import FormView
 from django.contrib.messages.views import SuccessMessageMixin
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from .forms import SupportForm
 
