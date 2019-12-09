@@ -1,4 +1,6 @@
-from django.utils import six, dateparse
+from django.utils import dateparse
+
+import six
 
 from pyeti.utils import is_truthy
 

@@ -10,7 +10,7 @@ migrations:
 	python manage.py makemigrations
 
 test:
-	python $(test)
+	python -Wa $(test)
 
 coverage:
 	coverage run --branch $(test)

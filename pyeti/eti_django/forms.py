@@ -2,10 +2,10 @@ from django import forms
 from django.forms.widgets import (
     Widget, Select, SplitDateTimeWidget as BaseSplitDateTimeWidget,
 )
-from django.utils import six
 from django.utils.encoding import force_text
 from django.utils.translation import ugettext as _
 
+import six
 import datetime
 import re
 
