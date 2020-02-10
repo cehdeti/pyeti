@@ -16,11 +16,9 @@ build:
     - make deps
 
     # Create folders for test and code coverage
-    - mkdir -p shippable/testresults
-    - mkdir -p shippable/codecoverage
+    - mkdir -p shippable/testresults shippable/codecoverage
 
-    - psql -c 'create database pyeti;' -U postgres
-    - psql -c 'create user root with superuser;' -U postgres
+    - psql -c 'create database pyeti; create user root with superuser;' -U postgres
 
     # Run test and code coverage and output results to the right folder
     - make test/coverage
