@@ -3,8 +3,6 @@ language: python
 python:
   - 3.6
 
-install: make deps
-
 services:
   - postgres
 
@@ -14,6 +12,9 @@ env:
 
 build:
   ci:
+    - pip install --upgrade pip
+    - make deps
+
     # Create folders for test and code coverage
     - mkdir -p shippable/testresults
     - mkdir -p shippable/codecoverage
