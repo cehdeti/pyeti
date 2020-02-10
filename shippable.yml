@@ -3,7 +3,7 @@ language: python
 python:
   - 3.4
 
-install: "pip install -r requirements.txt"
+install: make deps
 
 services:
   - postgres
@@ -22,7 +22,7 @@ build:
     - psql -c 'create user root with superuser;' -U postgres
 
     # Run test and code coverage and output results to the right folder
-    - make coverage
+    - make test/coverage
     - coverage xml -o shippable/codecoverage/coverage.xml
     - make lint
 

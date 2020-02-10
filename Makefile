@@ -1,10 +1,7 @@
 .PHONY: default
-default: init test lint
+default: test lint
 
 test = manage.py test --keepdb
-
-init:
-	pip install -r requirements.txt
 
 migrations:
 	python manage.py makemigrations
@@ -12,11 +9,21 @@ migrations:
 test:
 	python -Wa $(test)
 
-coverage:
+test/coverage:
 	coverage run --branch $(test)
 
-coverage_html: coverage
+test/coverage/html: test/coverage
 	coverage html
 
 lint:
 	flake8 .
+
+deps:
+	pip install -r requirements.txt
+
+deps/outdated:
+	pip list --outdated
+
+deps/update:
+	pip list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 pip install -U
+	pip freeze > requirements.txt

@@ -7,7 +7,7 @@ A Python package of awesome stuff.
 
 ## Install
 
-`pip install pyeti` or `pip install -e 'git+https://github.com/cehdeti/pyeti.git@master#egg=pyeti'`
+`pip install -e 'git+https://github.com/cehdeti/pyeti.git@master#egg=pyeti'`
 
 ## Usage
 
@@ -187,9 +187,9 @@ cap_second(string_to_cap_second)
 
 ## Contributing
 
-* Install dependencies with `make init` (or just `make`).
+* Install dependencies with `make deps`.
 * We use the built-in `unittest` module for tests, `mock` or mocking, and
   `Faker` for generating dummy data. Run the test suite with `make test`, and
-  generate code coverage reports with `make coverage` or `make coverage_html`.
+  generate code coverage reports with `make test/coverage` or `make test/coverage/html`.
 * Code should all follow PEP8 conventions. Check your code style with `make
   lint`.
