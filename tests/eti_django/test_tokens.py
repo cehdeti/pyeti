@@ -20,7 +20,10 @@ class TokenGeneratorTests(TestCase):
         _mock_settings.SECRET_KEY = 'secret'
         self.addCleanup(patcher.stop)
 
-        self.__subject = TokenGenerator(_Tokenable(token_hash='hello'), 'token_hash')
+        self.__subject = TokenGenerator(
+            _Tokenable(token_hash='hello'),  # noqa: S106
+            'token_hash'
+        )
 
     def test_generates_an_appropriate_token(self):
         self.assertEqual('f15f486e6d87d4250297', self.__subject.generate())
