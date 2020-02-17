@@ -94,7 +94,7 @@ class UsageLicenseAdmin(admin.ModelAdmin):
     def export_as_csv(self, request, queryset):
 
         meta = self.model._meta
-        field_names = [field.name for field in meta.fields]
+        field_names = ['token', 'num_seats', 'start_date', 'end_date', 'spree_order_number']
 
         response = HttpResponse(content_type='text/csv')
         response['Content-Disposition'] = 'attachment; filename={}.csv'.format(meta)
