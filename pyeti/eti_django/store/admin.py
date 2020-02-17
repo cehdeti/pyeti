@@ -3,7 +3,9 @@ from django.conf import settings
 from django.core.exceptions import PermissionDenied
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
+from django.http import HttpResponse
 
+import csv
 from pyeti.eti_django.store.models import UsageLicense
 from pyeti.eti_django.store.exceptions import SubscriptionDoesNotExist
 
@@ -35,7 +37,7 @@ class UsageLicenseAdmin(admin.ModelAdmin):
     list_display_links = None
     list_filter = (UsageLicenseStatusFilter,)
     search_fields = ('token',)
-    actions = ('sync_from_store',)
+    actions = ('sync_from_store', 'export_as_csv')
 
     def order_number(self, obj):
         if not obj.spree_order_number:
@@ -88,3 +90,20 @@ class UsageLicenseAdmin(admin.ModelAdmin):
         if failure:
             self.message_user(request, '%s license(s) failed to sync from store' % failure, level=messages.ERROR)
     sync_from_store.short_description = 'Sync from store'
+
+    def export_as_csv(self, request, queryset):
+
+        meta = self.model._meta
+        field_names = [field.name for field in meta.fields]
+
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename={}.csv'.format(meta)
+        writer = csv.writer(response)
+
+        writer.writerow(field_names)
+        for obj in queryset:
+            row = writer.writerow([getattr(obj, field) for field in field_names])
+
+        return response
+
+    export_as_csv.short_description = "Export Selected"
