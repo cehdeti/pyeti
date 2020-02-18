@@ -38,6 +38,7 @@ class UsageLicenseAdmin(admin.ModelAdmin):
     list_filter = (UsageLicenseStatusFilter,)
     search_fields = ('token',)
     actions = ('sync_from_store', 'export_as_csv')
+    csv_export_fields = ['token', 'num_seats', 'start_date', 'end_date', 'spree_order_number']
 
     def order_number(self, obj):
         if not obj.spree_order_number:
@@ -92,17 +93,13 @@ class UsageLicenseAdmin(admin.ModelAdmin):
     sync_from_store.short_description = 'Sync from store'
 
     def export_as_csv(self, request, queryset):
-
-        meta = self.model._meta
-        field_names = ['token', 'num_seats', 'start_date', 'end_date', 'spree_order_number']
-
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename={}.csv'.format(meta)
-        writer = csv.writer(response)
+        response['Content-Disposition'] = 'attachment; filename=%s.csv' % self.model._meta
 
-        writer.writerow(field_names)
+        writer = csv.writer(response)
+        writer.writerow(self.csv_export_fields)
         for obj in queryset:
-            writer.writerow([getattr(obj, field) for field in field_names])
+            writer.writerow([getattr(obj, field) for field in self.csv_export_fields])
 
         return response
 
