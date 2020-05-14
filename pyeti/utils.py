@@ -106,29 +106,3 @@ class AgeMixin(object):
         return date.year - birth_date.year - (
             (date.month, date.day) < (birth_date.month, birth_date.day)
         )
-
-
-class classproperty(property):
-    """
-    Allows for setting dynamic properties on a class and its instances.
-
-    Example:
-        ```
-        class MyThing:
-
-            @classproperty
-            def foo(cls):
-                return 'hello'
-
-        MyThing.foo => 'hello'
-        MyThing().foo => 'hello'
-    """
-
-    def __get__(self, obj, objtype=None):
-        return super().__get__(objtype)
-
-    def __set__(self, obj, value):
-        super().__set__(type(obj), value)
-
-    def __delete__(self, obj):
-        super().__delete__(type(obj))
