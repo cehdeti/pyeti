@@ -1,11 +1,10 @@
 from unittest import TestCase, mock
-from faker import Faker
 
 from django.db import models
 from django.db.utils import ProgrammingError
+from faker import Faker
 
-from pyeti.eti_django.tokens import TokenGenerator, HasSecureTokenMixin
-
+from pyeti.eti_django.tokens import HasSecureTokenMixin, TokenGenerator
 
 faker = Faker()
 

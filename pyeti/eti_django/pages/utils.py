@@ -1,9 +1,8 @@
-from django.conf import settings
-from django.template.loaders.app_directories import get_app_template_dirs
-
 import os
 import re
 
+from django.conf import settings
+from django.template.loaders.app_directories import get_app_template_dirs
 
 placeholder_re = re.compile(r"{% placeholder\s+('|\")(?P<name>[^\1]+?)\1[^}]+%}")
 

@@ -1,10 +1,9 @@
 import factory
-
 from django.conf import settings
+from faker import Faker
 
 from . import models
 
-from faker import Faker
 fake = Faker()
 
 

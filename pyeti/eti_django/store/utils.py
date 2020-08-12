@@ -1,9 +1,8 @@
-from django.conf import settings
-from django.utils import timezone
-
-from dateutil import parser
 from datetime import timedelta
 
+from dateutil import parser
+from django.conf import settings
+from django.utils import timezone
 
 parse_spree_date = parser.parse
 parse_spree_datetime = parser.parse

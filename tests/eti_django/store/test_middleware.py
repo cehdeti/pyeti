@@ -1,8 +1,8 @@
-from django.test import TestCase, override_settings, RequestFactory
-from django.contrib.auth.models import AnonymousUser, User
-from django.urls import reverse, reverse_lazy
-
 from unittest import mock
+
+from django.contrib.auth.models import AnonymousUser, User
+from django.test import RequestFactory, TestCase, override_settings
+from django.urls import reverse, reverse_lazy
 
 from pyeti.eti_django.store.middleware import SubscriptionMiddleware
 

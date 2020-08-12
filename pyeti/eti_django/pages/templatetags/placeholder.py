@@ -4,7 +4,6 @@ from django.utils.safestring import mark_safe
 
 from pyeti.eti_django.pages.models import Placeholder
 
-
 register = template.Library()
 
 

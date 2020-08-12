@@ -1,8 +1,9 @@
 from unittest import TestCase
 
+from faker import Faker
+
 from pyeti.utils import clean_numeric_string
 
-from faker import Faker
 faker = Faker()
 
 

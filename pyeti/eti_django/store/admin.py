@@ -1,13 +1,14 @@
-from django.contrib import admin, messages
+import csv
+
 from django.conf import settings
+from django.contrib import admin, messages
 from django.core.exceptions import PermissionDenied
+from django.http import HttpResponse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
-from django.http import HttpResponse
 
-import csv
-from pyeti.eti_django.store.models import UsageLicense
 from pyeti.eti_django.store.exceptions import SubscriptionDoesNotExist
+from pyeti.eti_django.store.models import UsageLicense
 
 
 class UsageLicenseStatusFilter(admin.SimpleListFilter):

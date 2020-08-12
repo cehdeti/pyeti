@@ -1,9 +1,10 @@
 from unittest import TestCase, mock
+
 import six
+from faker import Faker
 
 from pyeti.eti_django.utils import typecast_from_field
 
-from faker import Faker
 faker = Faker()
 
 

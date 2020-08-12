@@ -1,18 +1,17 @@
+from datetime import timedelta
+from unittest import mock
+
+import dateutil.parser
 from django.test import TestCase, override_settings
 from django.utils import timezone
+from faker import Faker
 
-from unittest import mock
-from datetime import timedelta
-import dateutil.parser
-
+from pyeti.eti_django.store.client import (
+    NO_SUBSCRIPTION_STATUS_CODE, SUBSCRIPTION_OK_STATUS_CODE,
+)
 from pyeti.eti_django.store.exceptions import SubscriptionDoesNotExist
 from pyeti.eti_django.store.factories import UsageLicenseFactory
-from pyeti.eti_django.store.client import (
-    SUBSCRIPTION_OK_STATUS_CODE,
-    NO_SUBSCRIPTION_STATUS_CODE,
-)
 
-from faker import Faker
 _faker = Faker()
 
 

@@ -1,10 +1,9 @@
+import random
 from unittest import TestCase, mock
 
 from faker import Faker
-import random
 
-from pyeti.eti_django.db import lock, LOCKS
-
+from pyeti.eti_django.db import LOCKS, lock
 
 fake = Faker()
 srandom = random.SystemRandom()

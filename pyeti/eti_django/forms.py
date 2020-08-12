@@ -1,13 +1,13 @@
+import datetime
+import re
+
+import six
 from django import forms
 from django.forms.widgets import (
-    Widget, Select, SplitDateTimeWidget as BaseSplitDateTimeWidget,
+    Select, SplitDateTimeWidget as BaseSplitDateTimeWidget, Widget,
 )
 from django.utils.encoding import force_text
 from django.utils.translation import gettext as _
-
-import six
-import datetime
-import re
 
 try:
     from django.contrib.postgres.fields import ArrayField

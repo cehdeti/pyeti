@@ -1,6 +1,6 @@
-from rest_framework.routers import SimpleRouter, Route, DynamicDetailRoute
-from rest_framework.urlpatterns import format_suffix_patterns
 from django.conf.urls import url
+from rest_framework.routers import DynamicDetailRoute, Route, SimpleRouter
+from rest_framework.urlpatterns import format_suffix_patterns
 
 
 class SingularResourceRouter(SimpleRouter):

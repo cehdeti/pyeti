@@ -1,10 +1,10 @@
+import random
+from collections import namedtuple
 from unittest import TestCase, mock
 
-from collections import namedtuple
 from faker import Faker
-import random
 
-from pyeti.eti_django.models import KeyedModelCache, KeyedCacheManager
+from pyeti.eti_django.models import KeyedCacheManager, KeyedModelCache
 
 faker = Faker()
 srandom = random.SystemRandom()

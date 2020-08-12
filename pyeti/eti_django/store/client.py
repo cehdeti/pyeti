@@ -1,8 +1,7 @@
-from django.conf import settings
-
-import requests
 import logging
 
+import requests
+from django.conf import settings
 
 requests.packages.urllib3.disable_warnings()
 

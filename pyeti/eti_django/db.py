@@ -1,6 +1,6 @@
 from contextlib import contextmanager
-from django.db import transaction, connection
 
+from django.db import connection, transaction
 
 LOCK_ACCESS_SHARE = 'ACCESS SHARE'
 LOCK_ROW_SHARE = 'ROW SHARE'

@@ -1,5 +1,6 @@
-from six.moves import input
 from getpass import getpass
+
+from six.moves import input
 
 
 def confirm(message, default=None):

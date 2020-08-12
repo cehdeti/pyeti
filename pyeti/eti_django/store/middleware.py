@@ -3,11 +3,11 @@ try:
 except ImportError:  # pragma: no cover
     MiddlewareMixin = object
 
+import re
+
 from django.conf import settings
 from django.shortcuts import redirect
 from django.utils.functional import cached_property
-
-import re
 
 from . import signals
 

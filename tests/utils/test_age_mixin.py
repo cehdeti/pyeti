@@ -1,10 +1,10 @@
+from datetime import date
 from unittest import TestCase, mock
 
-from datetime import date
+from faker import Faker
 
 from pyeti.utils import AgeMixin
 
-from faker import Faker
 fake = Faker()
 
 

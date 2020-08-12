@@ -1,10 +1,10 @@
+from getpass import getpass
 from unittest import TestCase, mock
 
-from getpass import getpass
-
-from pyeti.cli import confirm, required_input, password_confirm, prompt
-
 from faker import Faker
+
+from pyeti.cli import confirm, password_confirm, prompt, required_input
+
 _faker = Faker()
 
 

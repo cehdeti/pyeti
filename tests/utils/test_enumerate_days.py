@@ -1,10 +1,8 @@
+import collections
+from datetime import date, timedelta
 from unittest import TestCase
 
 from pyeti.datetime_utils import enumerate_days
-
-from datetime import date, timedelta
-
-import collections
 
 
 class EnumerateDaysTests(TestCase):
