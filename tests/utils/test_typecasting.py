@@ -21,6 +21,8 @@ class TypecastingGuessTests(TestCase):
         conversions = {
             '4': 4, '-4': -4, '0': 0, '4.2': 4.2, '-4.2': -4.2, '.334': 0.334,
             '0.44': 0.44, 'hello': 'hello', '34,203.2': 34203.2,
+            '3.9233193446698323e+02': 392.3319344669832,
+            '1.7000000178813934e-01': 0.17000000178813934,
         }
 
         for value, result in list(conversions.items()):

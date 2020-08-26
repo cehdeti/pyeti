@@ -67,7 +67,7 @@ def typecast_guess(value):
     return stripped
 
 
-_non_numeric_re = re.compile(r'[^-\d\.]')
+_non_numeric_re = re.compile(r'[^\+\-\d\.eE]')
 
 
 def clean_numeric_string(value):
