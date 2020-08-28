@@ -28,9 +28,11 @@ class SupportForm(forms.Form):
 
     def clean(self):
         data = super().clean()
-        if not data['phonenumber']:
-            return data
-        raise forms.ValidationError(_('Please do not fill in the "phonenumber" field'))
+
+        if data.get('phonenumber'):
+            raise forms.ValidationError(_('Please do not fill in the "phonenumber" field'))
+
+        return data
 
     def save(self):
         response = self.__do_request(*self.__build_payload())
