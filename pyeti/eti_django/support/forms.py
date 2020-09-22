@@ -55,6 +55,10 @@ class SupportForm(forms.Form):
         if product_id:
             payload['product_id'] = int(product_id)
 
+        custom_fields = getattr(settings, 'PYETI_SUPPORT_FRESHDESK_CUSTOM_FIELDS', {})
+        if custom_fields:
+            payload['custom_fields'] = custom_fields
+
         if hasattr(self.files, 'getlist'):
             files = [
                 ('attachments[]', (file_.name, file_, file_.content_type))
