@@ -72,22 +72,19 @@ class SupportForm(forms.Form):
         if not freshdesk_subdomain or not freshdesk_api_key:
             logger.info("""
                 Received support submission, but API URL and/or key are not
-                set up. Here is the data:
-                Payload: %s
+                set up. Here is the payload:
+                Data: %s
                 Files: %s
                 """ % (data, files))
             return
 
+        kwargs = {'auth': (freshdesk_api_key, 'x')}
         if len(files) == 0:
-            return requests.post(
-                'https://%s.freshdesk.com/api/v2/tickets' % freshdesk_subdomain,
-                auth=(freshdesk_api_key, 'x'),
-                json=data,
-            )
+            kwargs.update({'json': data})
         else:
-            return requests.post(
-                'https://%s.freshdesk.com/api/v2/tickets' % freshdesk_subdomain,
-                auth=(freshdesk_api_key, 'x'),
-                data=data,
-                files=files,
-            )
+            kwargs.update({'data': data, 'files': files})
+
+        return requests.post(
+            'https://%s.freshdesk.com/api/v2/tickets' % freshdesk_subdomain,
+            **kwargs
+        )

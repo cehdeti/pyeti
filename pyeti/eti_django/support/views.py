@@ -1,4 +1,3 @@
-import django
 from django.contrib.messages.views import SuccessMessageMixin
 from django.utils.translation import gettext_lazy as _
 from django.views.generic import FormView
@@ -29,6 +28,5 @@ class SupportView(SuccessMessageMixin, FormView):
         """
         https://docs.djangoproject.com/en/2.2/releases/1.10/#using-user-is-authenticated-and-user-is-anonymous-as-methods
         """
-        if django.VERSION < (1, 10):
-            return self.request.user.is_authenticated()
-        return self.request.user.is_authenticated
+        method = self.request.user.is_authenticated
+        return method() if callable(method) else method

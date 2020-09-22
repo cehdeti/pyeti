@@ -1,7 +1,7 @@
-from django.conf.urls import url
+from django.urls import path
 
 from . import views
 
 urlpatterns = [
-    url(r'support/$', views.SupportView.as_view(), name='support'),
+    path('support/', views.SupportView.as_view(), name='support'),
 ]
