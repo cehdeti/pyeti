@@ -37,7 +37,7 @@ class SupportForm(forms.Form):
     def save(self):
         response = self.__do_request(*self.__build_payload())
 
-        if response:
+        if response is not None:
             response.raise_for_status()
 
     def __build_payload(self):
