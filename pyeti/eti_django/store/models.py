@@ -1,10 +1,14 @@
 from datetime import timedelta
 
 from django.conf import settings
-from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext as _, gettext_lazy as _l
+
+try:
+    from django.db.models import JSONField
+except ImportError:
+    from django.contrib.postgres.fields import JSONField
 
 from .client import NO_SUBSCRIPTION_STATUS_CODE, store as main_store
 from .exceptions import SubscriptionDoesNotExist
