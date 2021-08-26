@@ -20,3 +20,6 @@ DATABASES = {
 
 
 ROOT_URLCONF = 'tests.urls'
+
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
