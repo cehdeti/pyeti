@@ -154,6 +154,9 @@ The `pyeti.eti_django.support` app includes a form that will create a support
 ticket in FreshDesk via email. To use it, add the following to your
 `settings.py`:
 
+**Where is the API key?**
+https://support.freshdesk.com/support/solutions/articles/215517-how-to-find-your-api-key
+
 ```
 INSTALLED_APPS = [
   ...
