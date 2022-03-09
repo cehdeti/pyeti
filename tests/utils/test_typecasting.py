@@ -14,8 +14,13 @@ class TypecastingGuessTests(TestCase):
         self.assertIs(typecast_guess(value), value)
 
     def test_casts_blank_strings_to_null(self):
-        for value in ['', '   ']:
-            self.assertIsNone(typecast_guess(value), None)
+        for value in [
+            '', '   ',
+            'NA', 'nA', 'n/a', 'N/a',
+            'None', 'nOne'
+        ]:
+            with self.subTest(value=value):
+                self.assertIsNone(typecast_guess(value), None)
 
     def test_casts_various_values_correctly(self):
         conversions = {
@@ -26,4 +31,5 @@ class TypecastingGuessTests(TestCase):
         }
 
         for value, result in list(conversions.items()):
-            self.assertEqual(typecast_guess(value), result)
+            with self.subTest(value=value, result=result):
+                self.assertEqual(typecast_guess(value), result)

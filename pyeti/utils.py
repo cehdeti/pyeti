@@ -58,7 +58,7 @@ def typecast_guess(value):
         return value
 
     stripped = value.strip()
-    if stripped == '':
+    if stripped.lower() in ['', 'none', 'na', 'n/a']:
         return None
     if _integer_re.match(value):
         return int(clean_numeric_string(value))
