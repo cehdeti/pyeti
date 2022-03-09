@@ -1,4 +1,4 @@
-import collections
+from collections.abc import Iterator
 from datetime import date, timedelta
 from unittest import TestCase
 
@@ -18,7 +18,7 @@ class EnumerateDaysTests(TestCase):
         start_date = date(2019, 1, 1)
         end_date = date(2019, 1, 30)
         day_iterator = enumerate_days(start_date, end_date)
-        self.assertIsInstance(day_iterator, collections.Iterator)
+        self.assertIsInstance(day_iterator, Iterator)
 
     def test_no_end_date(self):
         start_date = date.today() - timedelta(days=29)
