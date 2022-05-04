@@ -16,7 +16,7 @@ class TokenGeneratorTests(TestCase):
 
         patcher = mock.patch('pyeti.eti_django.tokens.settings')
         _mock_settings = patcher.start()
-        _mock_settings.SECRET_KEY = 'secret'
+        _mock_settings.SECRET_KEY = 'secret'  # noqa: S105
         self.addCleanup(patcher.stop)
 
         self.__subject = TokenGenerator(
@@ -72,7 +72,7 @@ class HasSecureTokenMixinTests(TestCase):
         self.assertEqual(len(self.__subject.token_hash), 16)
 
     def test_does_not_override_existing_token_hash(self):
-        self.__subject.token_hash = 'hello'
+        self.__subject.token_hash = 'hello'  # noqa: S105
         try:
             self.__subject.save()
         except ProgrammingError:

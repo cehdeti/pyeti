@@ -4,6 +4,12 @@ from django.contrib.auth.models import AnonymousUser, User
 from django.test import RequestFactory, TestCase, override_settings
 from django.urls import reverse, reverse_lazy
 
+try:
+    from django.utils.deprecation import MiddlewareMixin  # noqa: F401
+    _MIDDLEWARE_TAKES_ARG = True
+except ImportError:  # pragma: no cover
+    _MIDDLEWARE_TAKES_ARG = False
+
 from pyeti.eti_django.store.middleware import SubscriptionMiddleware
 
 
@@ -20,7 +26,11 @@ class SubscriptionMiddlewareTests(TestCase):
         super().setUp()
         SubscriptionMiddleware.expired_license_url = reverse('expired_license')
         SubscriptionMiddleware.no_license_url = reverse_lazy('no_license')
-        self.__subject = SubscriptionMiddleware().process_request
+        if _MIDDLEWARE_TAKES_ARG:
+            self.__middleware = SubscriptionMiddleware(mock.Mock())
+        else:
+            self.__middleware = SubscriptionMiddleware()
+        self.__subject = self.__middleware.process_request
         self.__factory = RequestFactory()
         self.__request = self.__factory.get('/')
         self.__request.user = User()

@@ -5,7 +5,7 @@ from django import forms
 from django.forms.widgets import (
     Select, SplitDateTimeWidget as BaseSplitDateTimeWidget, Widget,
 )
-from django.utils.encoding import force_text
+from django.utils.encoding import force_str
 from django.utils.translation import gettext as _
 
 try:
@@ -213,7 +213,7 @@ class SelectTimeWidget(Widget):
         context = super().get_context(name, value, attrs)
         subwidgets = []
 
-        hour_choices = [(i, force_text(i)) for i in self.hours]
+        hour_choices = [(i, force_str(i)) for i in self.hours]
         if self.is_required is False:
             hour_choices.insert(0, self.hour_none_value)
         hour_attrs = context['widget']['attrs'].copy()

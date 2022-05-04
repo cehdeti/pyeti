@@ -22,4 +22,7 @@ DATABASES = {
 ROOT_URLCONF = 'tests.urls'
 
 
+USE_TZ = True
+
+
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
