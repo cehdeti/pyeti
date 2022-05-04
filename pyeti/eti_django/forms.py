@@ -1,7 +1,6 @@
 import datetime
 import re
 
-import six
 from django import forms
 from django.forms.widgets import (
     Select, SplitDateTimeWidget as BaseSplitDateTimeWidget, Widget,
@@ -70,7 +69,7 @@ class ConfirmationFieldMixin(object):
         errors = {}
 
         for fieldset in self.CONFIRMATION_FIELDS:
-            if isinstance(fieldset, six.string_types):
+            if isinstance(fieldset, str):
                 field_1 = fieldset
                 field_2 = '%s_confirm' % fieldset
             elif len(fieldset) == 2:
@@ -257,7 +256,7 @@ class SelectTimeWidget(Widget):
         hour, minute, meridiem = None, None, None
         if isinstance(value, (datetime.datetime, datetime.time)):
             hour, minute, meridiem = value.hour, value.minute, self.meridiems[int(value.hour < 12)][0]
-        elif isinstance(value, six.string_types):
+        elif isinstance(value, str):
             match = self.time_re.match(value)
             if match:
                 matches = match.groups()

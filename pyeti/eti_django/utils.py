@@ -1,4 +1,3 @@
-import six
 from django.utils import dateparse
 
 from pyeti.utils import is_truthy
@@ -9,7 +8,7 @@ def typecast_from_field(field, value):
     Given a Django model field and a value, typecast the value to the datatype
     expected by the field.
     """
-    if not isinstance(value, six.string_types):
+    if not isinstance(value, str):
         return value
     if field.deconstruct()[-1].get('null') and value.strip() == '':
         return None

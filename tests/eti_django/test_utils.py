@@ -1,6 +1,5 @@
 from unittest import TestCase, mock
 
-import six
 from faker import Faker
 
 from pyeti.eti_django.utils import typecast_from_field
@@ -60,7 +59,7 @@ class TypecastingFromFieldTests(TestCase):
             field = self.__mock_field(field_type=field_type)
             return_value = getattr(faker, mock_method)()
             value = mock.MagicMock()
-            value.__class__ = six.string_types[0]
+            value.__class__ = str
             converter = mock.MagicMock(return_value=return_value)
             setattr(value, conversion_method, converter)
 

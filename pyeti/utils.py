@@ -1,8 +1,6 @@
 import datetime
 import re
 
-import six
-
 
 def ignore_exception(*exception_classes):
     """
@@ -35,7 +33,7 @@ def is_truthy(value):
     Utility function that converts various values to a boolean. Useful for web
     requests, where the value that comes in may be "0" or "false", etc.
     """
-    if isinstance(value, six.string_types):
+    if isinstance(value, str):
         value = value.strip().lower()
 
         if value in _yes_values:
@@ -54,7 +52,7 @@ def typecast_guess(value):
     """
     Try to typecast the given string value into a proper python datatype.
     """
-    if not isinstance(value, six.string_types):
+    if not isinstance(value, str):
         return value
 
     stripped = value.strip()
