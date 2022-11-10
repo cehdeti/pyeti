@@ -172,22 +172,6 @@ PYETI_SUPPORT_FRESHDESK_PRODUCT_ID = '{optional}'
 Then, import the URL conf if you want to use the package's views and/or
 templates.
 
-### Jokes
-
-The cap_second utility will always capitalize the second letter in a python string.
-
-```
-from pyeti.jokes import cap_second
-
-string_to_cap_second='Tsthoeu stnahooOTO tnhoustnh'
-
-cap_second(string_to_cap_second)
-> 'tSthoeu Stnahoooto Tnhoustnh'
-
-cap_second(string_to_cap_second)
-> 'TSthoeu stnahoooto tnhoustnh'
-```
-
 ## Contributing
 
 * Install dependencies with `make deps`.
