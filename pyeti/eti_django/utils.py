@@ -1,6 +1,17 @@
+from django.contrib.postgres.fields import ArrayField
+from django.db import models
 from django.utils import dateparse
 
 from pyeti.utils import is_truthy
+
+_TYPECASTERS = {
+    models.BooleanField: lambda x: is_truthy(x),
+    models.CharField: lambda x: x.strip(),
+    models.DateField: lambda x: dateparse.parse_date(x),
+    models.FloatField: lambda x: float(x),
+    models.IntegerField: lambda x: int(x),
+    ArrayField: lambda x: x.split(','),
+}
 
 
 def typecast_from_field(field, value):
@@ -13,16 +24,8 @@ def typecast_from_field(field, value):
     if field.deconstruct()[-1].get('null') and value.strip() == '':
         return None
 
-    field_type = field.get_internal_type()
-    if field_type == 'BooleanField':
-        return is_truthy(value)
-    if field_type == 'CharField':
-        return value.strip()
-    if field_type == 'DateField':
-        return dateparse.parse_date(value)
-    if field_type == 'FloatField':
-        return float(value)
-    if field_type == 'IntegerField':
-        return int(value)
+    for field_class, typecaster in _TYPECASTERS.items():
+        if isinstance(field, field_class):
+            return typecaster(value)
 
     return value
