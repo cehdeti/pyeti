@@ -10,7 +10,7 @@ _TYPECASTERS = {
     models.DateField: lambda x: dateparse.parse_date(x),
     models.FloatField: lambda x: float(x),
     models.IntegerField: lambda x: int(x),
-    ArrayField: lambda x: x.split(','),
+    ArrayField: lambda x: x.split(',') if x.strip() else [],
 }
 
 

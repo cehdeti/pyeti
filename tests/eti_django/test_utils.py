@@ -78,6 +78,12 @@ class TypecastingFromFieldTests(TestCase):
         self.assertIsInstance(value, list)
         self.assertEqual(value, ['hello', 'there'])
 
+    def test_handles_empty_array_fields(self):
+        field = self.__mock_field(field_class=ArrayField)
+        value = typecast_from_field(field, '')
+        self.assertIsInstance(value, list)
+        self.assertEqual(value, [])
+
     def test_returns_values_we_dont_know_how_to_deal_with(self):
         field = self.__mock_field(field_class=_FakeField)
         value = faker.word()
