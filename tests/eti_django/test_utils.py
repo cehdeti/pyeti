@@ -22,7 +22,7 @@ class TypecastingFromFieldTests(TestCase):
             self.assertIs(typecast_from_field(mock.Mock(), value), value)
 
     def test_casts_blank_strings_to_null_for_fields_that_support_it(self):
-        field = self.__mock_field(allow_null=True)
+        field = self.__mock_field(null=True)
         self.assertIsNone(typecast_from_field(field, ''), None)
         self.assertIsNone(typecast_from_field(field, '   '), None)
 
@@ -84,14 +84,21 @@ class TypecastingFromFieldTests(TestCase):
         self.assertIsInstance(value, list)
         self.assertEqual(value, [])
 
+    def test_handles_fields_with_options(self):
+        field = self.__mock_field(field_class=models.IntegerField, choices=[(1, 'Hello'), (2, 'There')])
+        value = typecast_from_field(field, 'Hello')
+        self.assertIsInstance(value, int)
+        self.assertEqual(value, 1)
+
     def test_returns_values_we_dont_know_how_to_deal_with(self):
         field = self.__mock_field(field_class=_FakeField)
         value = faker.word()
         self.assertIs(typecast_from_field(field, value), value)
 
-    def __mock_field(self, field_class=models.CharField, allow_null=False):
+    def __mock_field(self, field_class=models.CharField, **options):
+        options.setdefault('null', False)
+
         field = mock.Mock(spec=field_class)
-        field_option = mock.Mock()
-        field_option.get.return_value = allow_null
-        field.deconstruct.return_value = [field_option]
+        field_options = options
+        field.deconstruct.return_value = [field_options]
         return field

@@ -21,8 +21,16 @@ def typecast_from_field(field, value):
     """
     if not isinstance(value, str):
         return value
-    if field.deconstruct()[-1].get('null') and value.strip() == '':
+
+    options = field.deconstruct()[-1]
+
+    if options.get('null') and value.strip() == '':
         return None
+
+    if 'choices' in options:
+        for choice, label in options['choices']:
+            if value == label:
+                return choice
 
     for field_class, typecaster in _TYPECASTERS.items():
         if isinstance(field, field_class):
