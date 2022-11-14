@@ -1,3 +1,4 @@
+from datetime import date
 from unittest import TestCase, mock
 
 from django.contrib.postgres.fields import ArrayField
@@ -45,15 +46,12 @@ class TypecastingFromFieldTests(TestCase):
         for value, result in list(values.items()):
             self.assertEqual(typecast_from_field(field, value), result)
 
-    @mock.patch('pyeti.eti_django.utils.dateparse')
-    def test_parses_values_for_date_fields_as_a_datetime_object(self, dateparse):
-        return_value = faker.word()
-        dateparse.parse_date.return_value = return_value
+    def test_parses_values_for_date_fields_as_a_date_object(self):
         field = self.__mock_field(field_class=models.DateField)
-        value = faker.word()
-
-        self.assertIs(typecast_from_field(field, value), return_value)
-        dateparse.parse_date.assert_called_once_with(value)
+        self.assertEqual(
+            typecast_from_field(field, '2011-11-12'),
+            date(2011, 11, 12)
+        )
 
     def test_casts_values_for_simpler_fields_using_builtin_casting_functions(self):
         conversions = [
@@ -73,22 +71,31 @@ class TypecastingFromFieldTests(TestCase):
             self.assertTrue(getattr(value, conversion_method).called)
 
     def test_casts_values_for_array_fields_to_a_list(self):
-        field = self.__mock_field(field_class=ArrayField)
+        base_field = self.__mock_field(field_class=models.CharField)
+        field = self.__mock_field(field_class=ArrayField, base_field=base_field)
         value = typecast_from_field(field, 'hello,there')
         self.assertIsInstance(value, list)
         self.assertEqual(value, ['hello', 'there'])
 
     def test_handles_empty_array_fields(self):
-        field = self.__mock_field(field_class=ArrayField)
+        base_field = self.__mock_field(field_class=models.CharField)
+        field = self.__mock_field(field_class=ArrayField, base_field=base_field)
         value = typecast_from_field(field, '')
         self.assertIsInstance(value, list)
         self.assertEqual(value, [])
 
-    def test_handles_fields_with_options(self):
+    def test_maps_choice_labels_to_values_for_fields_with_choices(self):
         field = self.__mock_field(field_class=models.IntegerField, choices=[(1, 'Hello'), (2, 'There')])
         value = typecast_from_field(field, 'Hello')
         self.assertIsInstance(value, int)
         self.assertEqual(value, 1)
+
+    def test_handles_array_fields_with_choices(self):
+        base_field = self.__mock_field(field_class=models.CharField, choices=[(1, 'Hello'), (2, 'There')])
+        field = self.__mock_field(field_class=ArrayField, base_field=base_field)
+        value = typecast_from_field(field, 'Hello,There')
+        self.assertIsInstance(value, list)
+        self.assertEqual(value, [1, 2])
 
     def test_returns_values_we_dont_know_how_to_deal_with(self):
         field = self.__mock_field(field_class=_FakeField)

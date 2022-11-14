@@ -4,15 +4,6 @@ from django.utils import dateparse
 
 from pyeti.utils import is_truthy
 
-_TYPECASTERS = {
-    models.BooleanField: lambda x: is_truthy(x),
-    models.CharField: lambda x: x.strip(),
-    models.DateField: lambda x: dateparse.parse_date(x),
-    models.FloatField: lambda x: float(x),
-    models.IntegerField: lambda x: int(x),
-    ArrayField: lambda x: x.split(',') if x.strip() else [],
-}
-
 
 def typecast_from_field(field, value):
     """
@@ -32,8 +23,30 @@ def typecast_from_field(field, value):
             if value == label:
                 return choice
 
+    if isinstance(field, ArrayField):
+        return _parse_arrayfield(value, options['base_field'])
+
     for field_class, typecaster in _TYPECASTERS.items():
         if isinstance(field, field_class):
             return typecaster(value)
 
     return value
+
+
+def _parse_arrayfield(value, base_field):
+    if value.strip() == '':
+        return []
+
+    return [
+        typecast_from_field(base_field, val)
+        for val in value.split(',')
+    ]
+
+
+_TYPECASTERS = {
+    models.BooleanField: is_truthy,
+    models.CharField: lambda value: value.strip(),
+    models.DateField: dateparse.parse_date,
+    models.FloatField: float,
+    models.IntegerField: int,
+}
