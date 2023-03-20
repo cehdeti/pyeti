@@ -2,37 +2,32 @@ import datetime
 import re
 
 from django import forms
+from django.contrib.postgres.fields import ArrayField
 from django.forms.widgets import (
     Select, SplitDateTimeWidget as BaseSplitDateTimeWidget, Widget,
 )
 from django.utils.encoding import force_str
 from django.utils.translation import gettext as _
 
-try:
-    from django.contrib.postgres.fields import ArrayField
-except ImportError:
-    ArrayField = None
 
+class ChoiceArrayField(ArrayField):
+    """
+    A field that allows us to store an array of choices.
 
-if ArrayField:
-    class ChoiceArrayField(ArrayField):
-        """
-        A field that allows us to store an array of choices.
+    Uses Django 1.9+ postgres ArrayField and a MultipleChoiceField for its
+    formfield.
 
-        Uses Django 1.9+ postgres ArrayField and a MultipleChoiceField for its
-        formfield.
+    https://blogs.gnome.org/danni/2016/03/08/multiple-choice-using-djangos-postgres-arrayfield/
+    """
 
-        https://blogs.gnome.org/danni/2016/03/08/multiple-choice-using-djangos-postgres-arrayfield/
-        """
-
-        def formfield(self, **kwargs):
-            defaults = {
-                'form_class': forms.MultipleChoiceField,
-                'choices': self.base_field.choices,
-            }
-            defaults.update(kwargs)
-            # Intentional bad super call.
-            return super(ArrayField, self).formfield(**defaults)
+    def formfield(self, **kwargs):
+        defaults = {
+            'form_class': forms.MultipleChoiceField,
+            'choices': self.base_field.choices,
+        }
+        defaults.update(kwargs)
+        # Intentional bad super call.
+        return super(ArrayField, self).formfield(**defaults)
 
 
 class ConfirmationFieldMixin(object):
