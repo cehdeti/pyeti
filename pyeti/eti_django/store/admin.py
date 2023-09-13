@@ -34,7 +34,7 @@ class UsageLicenseStatusFilter(admin.SimpleListFilter):
 @admin.register(UsageLicense)
 class UsageLicenseAdmin(admin.ModelAdmin):
     model = UsageLicense
-    list_display = ('token', 'num_seats', 'start_date', 'end_date', 'order_number')
+    list_display = ('token', 'num_seats', 'start_date', 'end_date', 'last_synced_at', 'order_number')
     list_display_links = None
     list_filter = (UsageLicenseStatusFilter,)
     search_fields = ('token',)

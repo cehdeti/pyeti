@@ -37,7 +37,7 @@ class UsageLicense(models.Model):
     num_seats = models.IntegerField(verbose_name=_l('number of seats'))
     start_date = models.DateTimeField()
     end_date = models.DateTimeField()
-    last_synced_at = models.DateTimeField(auto_now_add=True)
+    last_synced_at = models.DateTimeField(auto_now_add=True, verbose_name=_l('last sync'))
     spree_order_number = models.CharField(max_length=16, blank=True, null=True)
     extra = JSONField(blank=True, default=dict)
 
