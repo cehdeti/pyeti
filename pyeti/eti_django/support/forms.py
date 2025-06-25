@@ -78,16 +78,17 @@ class SupportForm(forms.Form):
                 set up. Here is the payload:
                 Data: %s
                 Files: %s
-                """ % (data, files))
+                """, data, files)
             return
 
-        kwargs = {'auth': (freshdesk_api_key, 'x')}
         if len(files) == 0:
-            kwargs.update({'json': data})
+            kwargs = {'json': data}
         else:
-            kwargs.update({'data': data, 'files': files})
+            kwargs = {'data': data, 'files': files}
 
         return requests.post(
             'https://%s.freshdesk.com/api/v2/tickets' % freshdesk_subdomain,
+            auth=(freshdesk_api_key, 'x'),
+            timeout=10,
             **kwargs
         )

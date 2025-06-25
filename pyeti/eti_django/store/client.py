@@ -165,7 +165,7 @@ class Store(object):
                 result: %s
                 result status %s
                 could not decode result json: %s
-            """ % (response.url, response.text, response.status_code, e))
+            """, response.url, response.text, response.status_code, e.message)
 
     def _params(self, **params):
         if self._group:
