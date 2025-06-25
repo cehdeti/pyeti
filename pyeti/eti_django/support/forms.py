@@ -5,6 +5,8 @@ from django import forms
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
+from pyeti.eti_django.forms import MultipleFileField
+
 logger = logging.getLogger(__name__)
 
 
@@ -21,7 +23,7 @@ class SupportForm(forms.Form):
     email = forms.EmailField()
     subject = forms.CharField()
     message = forms.CharField(widget=forms.Textarea)
-    files = forms.FileField(label=_('File(s)'), widget=forms.FileInput(attrs={'multiple': True}), required=False)
+    files = MultipleFileField(label=_('File(s)'), required=False)
 
     # Honeypot field
     phonenumber = forms.CharField(required=False)
@@ -59,13 +61,10 @@ class SupportForm(forms.Form):
         if custom_fields:
             payload['custom_fields'] = custom_fields
 
-        if hasattr(self.files, 'getlist'):
-            files = [
-                ('attachments[]', (file_.name, file_, file_.content_type))
-                for file_ in self.files.getlist('files')
-            ]
-        else:
-            files = []
+        files = [
+            ('attachments[]', (file_.name, file_, file_.content_type))
+            for file_ in data.get('files', [])
+        ]
 
         return payload, files
 
