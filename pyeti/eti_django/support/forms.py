@@ -61,6 +61,8 @@ class SupportForm(forms.Form):
         if custom_fields:
             payload['custom_fields'] = custom_fields
 
+        payload.update(getattr(settings, 'PYETI_SUPPORT_FRESHDESK_ADDITIONAL_PAYLOAD', {}))
+
         files = [
             ('attachments[]', (file_.name, file_, file_.content_type))
             for file_ in data.get('files', [])
